@@ -29,3 +29,28 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+
+      - name: Generate index.html
+        run: |
+          echo '<!doctype html><html lang="en"><head><meta charset="utf-8">' > index.html
+          echo '<title>My Talks</title>' >> index.html
+          echo '<style>' >> index.html
+          echo 'body { font-family: system-ui, sans-serif; max-width: 50em; margin: 2em auto; padding: 0 1em; }' >> index.html
+          echo 'h1 { font-size: 2em; margin-bottom: 0.5em; }' >> index.html
+          echo 'ul { list-style: none; padding-left: 0; }' >> index.html
+          echo 'li { margin: 0.5em 0; }' >> index.html
+          echo 'a { text-decoration: none; color: #1565c0; font-weight: 500; }' >> index.html
+          echo 'a:hover { text-decoration: underline; }' >> index.html
+          echo '</style></head><body>' >> index.html
+          echo '<h1>My Talks</h1><ul>' >> index.html
+
+          for d in */ ; do
+            if [ -f "$d/index.html" ]; then
+              name=$(basename "$d")
+              title=$(grep -m1 "<title>" "$d/index.html" | sed -E 's/.*<title>(.*)<\/title>.*/\1/')
+              if [ -z "$title" ]; then title=$name; fi
+              echo "<li><a href='$name/'>$title</a></li>" >> index.html
+            fi
+          done
+
+          echo '</ul></body></html>' >> index.html
