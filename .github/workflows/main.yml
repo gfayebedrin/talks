@@ -1,8 +1,7 @@
 name: Deploy slides
-
 on:
-  push:
-    branches: [ "main" ]
+  push: { branches: [ main ] }
+  pull_request:
 
 permissions:
   contents: read
@@ -10,47 +9,52 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository with submodules
+      - name: Checkout (with submodules)
         uses: actions/checkout@v4
         with:
-          submodules: true     # 🔑 fetch the Reveal.js submodule
+          submodules: true
 
-      - name: Setup Pages
+      - name: Generate index.html (root)
+        run: |
+          set -euo pipefail
+          {
+            cat <<'HTML'
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>My Talks</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 50rem; margin: 2rem auto; padding: 0 1rem; }
+  h1 { margin: 0 0 1rem; }
+  ul { list-style: none; padding: 0; }
+  li { margin: .4rem 0; }
+  a { text-decoration: none; color: #1565c0; font-weight: 500; }
+  a:hover { text-decoration: underline; }
+</style></head><body><h1>My Talks</h1><ul>
+HTML
+            # list only first-level dirs that contain index.html
+            for d in */ ; do
+              [ -f "${d}index.html" ] || continue
+              name="${d%/}"
+              title=$(grep -m1 -oP '(?i)(?<=<title>).*?(?=</title>)' "${d}index.html" || true)
+              [ -n "$title" ] || title="$name"
+              printf '<li><a href="%s/">%s</a></li>\n' "$name" "$title"
+            done
+            echo '</ul></body></html>'
+          } > index.html
+
+      - name: Configure Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload artifact (root)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .              # deploy entire repo (talk1/, talk2/, reveal/)
+          path: .
 
-      - name: Deploy to GitHub Pages
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
         uses: actions/deploy-pages@v4
-
-      - name: Generate index.html
-        run: |
-          echo '<!doctype html><html lang="en"><head><meta charset="utf-8">' > index.html
-          echo '<title>My Talks</title>' >> index.html
-          echo '<style>' >> index.html
-          echo 'body { font-family: system-ui, sans-serif; max-width: 50em; margin: 2em auto; padding: 0 1em; }' >> index.html
-          echo 'h1 { font-size: 2em; margin-bottom: 0.5em; }' >> index.html
-          echo 'ul { list-style: none; padding-left: 0; }' >> index.html
-          echo 'li { margin: 0.5em 0; }' >> index.html
-          echo 'a { text-decoration: none; color: #1565c0; font-weight: 500; }' >> index.html
-          echo 'a:hover { text-decoration: underline; }' >> index.html
-          echo '</style></head><body>' >> index.html
-          echo '<h1>My Talks</h1><ul>' >> index.html
-
-          for d in */ ; do
-            if [ -f "$d/index.html" ]; then
-              name=$(basename "$d")
-              title=$(grep -m1 "<title>" "$d/index.html" | sed -E 's/.*<title>(.*)<\/title>.*/\1/')
-              if [ -z "$title" ]; then title=$name; fi
-              echo "<li><a href='$name/'>$title</a></li>" >> index.html
-            fi
-          done
-
-          echo '</ul></body></html>' >> index.html
