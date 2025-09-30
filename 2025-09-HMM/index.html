@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Reveal.js MWE</title>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+    <!-- Theme (choose another: black, white, league, night, serif, etc.) -->
+    <link rel="stylesheet" href="../reveal.js/dist/theme/white.css" id="theme">
+
+    <!-- Code highlight theme -->
+    <link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown="main.md" data-separator="^---" data-separator-vertical="^--"
+                data-separator-notes="^Note:" data-charset="iso-8859-15">
+            </section>
+        </div>
+    </div>
+
+
+    <!-- Reveal.js core -->
+    <script src="../reveal.js/dist/reveal.js"></script>
+    <!-- Plugins -->
+    <script src="../reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="../reveal.js/plugin/notes/notes.js"></script>
+    <script src="../reveal.js/plugin/math/math.js"></script>
+
+    <script>
+        Reveal.initialize({
+            hash: true,                 // Update URL as you navigate
+            slideNumber: true,          // Show slide numbers
+            transition: 'none',        // none/fade/slide/convex/concave/zoom
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax3],
+        });
+    </script>
+</body>
+
+</html>
