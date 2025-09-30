@@ -1,12 +1,18 @@
 name: Deploy slides
+
 on:
-  push: { branches: [ main ] }
+  push:
+    branches: [ "main" ]
   pull_request:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -18,36 +24,35 @@ jobs:
           submodules: true
 
       - name: Generate index.html (root)
+        shell: bash
         run: |
           set -euo pipefail
-          {
-            cat <<'HTML'
-<!doctype html><html lang="en"><head><meta charset="utf-8">
-<title>My Talks</title>
-<style>
-  body { font-family: system-ui, sans-serif; max-width: 50rem; margin: 2rem auto; padding: 0 1rem; }
-  h1 { margin: 0 0 1rem; }
-  ul { list-style: none; padding: 0; }
-  li { margin: .4rem 0; }
-  a { text-decoration: none; color: #1565c0; font-weight: 500; }
-  a:hover { text-decoration: underline; }
-</style></head><body><h1>My Talks</h1><ul>
-HTML
-            # list only first-level dirs that contain index.html
-            for d in */ ; do
-              [ -f "${d}index.html" ] || continue
+          cat > index.html <<'HTML'
+          <!doctype html><html lang="en"><head><meta charset="utf-8">
+          <title>My Talks</title>
+          <style>
+            body { font-family: system-ui, sans-serif; max-width: 50rem; margin: 2rem auto; padding: 0 1rem; }
+            h1 { margin: 0 0 1rem; }
+            ul { list-style: none; padding: 0; }
+            li { margin: .4rem 0; }
+            a { text-decoration: none; color: #1565c0; font-weight: 500; }
+            a:hover { text-decoration: underline; }
+          </style></head><body><h1>My Talks</h1><ul>
+          HTML
+          for d in */ ; do
+            if [ -f "${d}index.html" ]; then
               name="${d%/}"
               title=$(grep -m1 -oP '(?i)(?<=<title>).*?(?=</title>)' "${d}index.html" || true)
               [ -n "$title" ] || title="$name"
-              printf '<li><a href="%s/">%s</a></li>\n' "$name" "$title"
-            done
-            echo '</ul></body></html>'
-          } > index.html
+              printf '<li><a href="%s/">%s</a></li>\n' "$name" "$title" >> index.html
+            fi
+          done
+          echo '</ul></body></html>' >> index.html
 
-      - name: Configure Pages
+      - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact (root)
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
@@ -55,6 +60,10 @@ HTML
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
