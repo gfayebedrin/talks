@@ -23,53 +23,27 @@ jobs:
         with:
           submodules: true
 
-      - name: Generate index.html (root, denylist)
+      - name: Generate talks.md (root, denylist)
         shell: bash
         run: |
           set -euo pipefail
-
-          # Denylist of top-level directories to exclude from the talks index.
-          # Also skip any dir starting with "_" or ".".
           SKIP_RE='^(reveal|reveal\.js|\.git|\.github|node_modules|vendor|assets|theme|dist|plugin|scripts|tools|test|tests|ci)$'
 
-          cat > index.html <<'HTML'
-          <!doctype html><html lang="en"><head><meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <title>My Talks</title>
-          <style>
-            :root { color-scheme: light dark; }
-            body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; max-width: 50rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
-            h1 { margin: 0 0 1rem; font-size: 1.75rem; }
-            ul { list-style: none; padding: 0; margin: 0; }
-            li { margin: .5rem 0; }
-            a { text-decoration: none; color: #1565c0; font-weight: 600; }
-            a:hover { text-decoration: underline; }
-          </style></head><body>
-          <h1>My Talks</h1>
-          <ul>
-          HTML
-
-          # List only first-level dirs that contain index.html and are not denied.
-          for d in */ ; do
-            [ -f "${d}index.html" ] || continue
-            name="${d%/}"
-
-            # Denylist checks
-            if [[ "$name" =~ $SKIP_RE ]] || [[ "$name" == _* ]] || [[ "$name" == .* ]]; then
-              continue
-            fi
-
-            # Extract <title> (fallback to folder name)
-            title="$(grep -m1 -i '<title>' "${d}index.html" | sed -E 's:.*<title>(.*)</title>.*:\1:i' || true)"
-            [ -n "$title" ] || title="$name"
-
-            printf '  <li><a href="%s/">%s</a></li>\n' "$name" "$title" >> index.html
-          done
-
-          cat >> index.html <<'HTML'
-          </ul>
-          </body></html>
-          HTML
+          {
+            echo
+            # List first-level dirs that contain index.html and are not denied.
+            for d in */ ; do
+              [ -f "${d}index.html" ] || continue
+              name="${d%/}"
+              if [[ "$name" =~ $SKIP_RE ]] || [[ "$name" == _* ]] || [[ "$name" == .* ]]; then
+                continue
+              fi
+              title="$(grep -m1 -i '<title>' "${d}index.html" | sed -E 's:.*<title>(.*)</title>.*:\1:i' || true)"
+              [ -n "$title" ] || title="$name"
+              echo "- [${title}](${name}/)"
+            done
+            echo
+          } > talks.md
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

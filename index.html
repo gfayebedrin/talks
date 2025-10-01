@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>My Talks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+           max-width: 60rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+    header { margin-bottom: 1.5rem; }
+    h1 { font-size: 1.9rem; margin: 0 0 .5rem; }
+    .muted { color: #666; font-size: .95rem; }
+
+    /* Optional styling for rendered Markdown */
+    .markdown { min-height: 2rem; }
+    .markdown h2, .markdown h3 { margin-top: 1.25rem; }
+    .markdown pre { overflow: auto; padding: .75rem; border-radius: .5rem; }
+    .markdown code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .md-loading { opacity: .7; font-style: italic; }
+    .md-error { color: #b00020; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Talks</h1>
+    <p class="muted">Selected presentations and lecture slide decks.</p>
+  </header>
+
+  <!-- Example custom content you author by hand -->
+  <section>
+    <h2>Featured</h2>
+    <p>Add curated links or context here.</p>
+  </section>
+
+  <!-- Any div with class="markdown" and data-file="..." will be replaced by rendered Markdown -->
+  <section>
+    <h2>All talks</h2>
+    <div class="markdown" data-file="./talks.md">Loading…</div>
+  </section>
+
+  <!-- You can add more Markdown-backed sections anywhere -->
+  <!-- <div class="markdown" data-file="./about.md">Loading…</div> -->
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Render all .markdown blocks whose content comes from data-file
+    async function renderMarkdownBlocks() {
+      const blocks = Array.from(document.querySelectorAll('.markdown'));
+      await Promise.all(blocks.map(async (el) => {
+        const src = el.getAttribute('data-file') || el.getAttribute('data-src') || el.getAttribute('filepath');
+        if (!src) {
+          el.classList.add('md-error');
+          el.textContent = 'Missing data-file attribute.';
+          return;
+        }
+        try {
+          el.classList.add('md-loading');
+          const res = await fetch(src, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const md = await res.text();
+
+          // Configure marked if desired (e.g., breaks, gfm)
+          marked.setOptions({ breaks: true, gfm: true });
+          const html = marked.parse(md);
+
+          el.innerHTML = html;
+        } catch (e) {
+          el.classList.add('md-error');
+          el.textContent = `Could not load ${src}: ${e.message}`;
+        } finally {
+          el.classList.remove('md-loading');
+        }
+      }));
+    }
+
+    // Kick off rendering after DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', renderMarkdownBlocks);
+    } else {
+      renderMarkdownBlocks();
+    }
+  </script>
+</body>
+</html>
