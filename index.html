@@ -11,76 +11,39 @@
     header { margin-bottom: 1.5rem; }
     h1 { font-size: 1.9rem; margin: 0 0 .5rem; }
     .muted { color: #666; font-size: .95rem; }
-
-    /* Optional styling for rendered Markdown */
-    .markdown { min-height: 2rem; }
     .markdown h2, .markdown h3 { margin-top: 1.25rem; }
-    .markdown pre { overflow: auto; padding: .75rem; border-radius: .5rem; }
-    .markdown code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    .md-loading { opacity: .7; font-style: italic; }
+    .markdown ul { padding-left: 1.2em; }
     .md-error { color: #b00020; font-weight: 600; }
   </style>
 </head>
 <body>
   <header>
-    <h1>My Talks</h1>
-    <p class="muted">Selected presentations and lecture slide decks.</p>
+    <h1>Slide decks</h1>
   </header>
 
-  <!-- Example custom content you author by hand -->
+  <!-- Auto-generated talks list goes here -->
   <section>
-    <h2>Featured</h2>
-    <p>Add curated links or context here.</p>
-  </section>
-
-  <!-- Any div with class="markdown" and data-file="..." will be replaced by rendered Markdown -->
-  <section>
-    <h2>All talks</h2>
     <div class="markdown" data-file="./talks.md">Loading…</div>
   </section>
 
-  <!-- You can add more Markdown-backed sections anywhere -->
-  <!-- <div class="markdown" data-file="./about.md">Loading…</div> -->
+  <!-- You can add more sections here manually -->
 
-  <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    // Render all .markdown blocks whose content comes from data-file
-    async function renderMarkdownBlocks() {
-      const blocks = Array.from(document.querySelectorAll('.markdown'));
-      await Promise.all(blocks.map(async (el) => {
-        const src = el.getAttribute('data-file') || el.getAttribute('data-src') || el.getAttribute('filepath');
-        if (!src) {
-          el.classList.add('md-error');
-          el.textContent = 'Missing data-file attribute.';
-          return;
-        }
+    (async function () {
+      for (const el of document.querySelectorAll('.markdown')) {
+        const src = el.getAttribute('data-file');
         try {
-          el.classList.add('md-loading');
           const res = await fetch(src, { cache: 'no-store' });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (!res.ok) throw new Error(res.status);
           const md = await res.text();
-
-          // Configure marked if desired (e.g., breaks, gfm)
-          marked.setOptions({ breaks: true, gfm: true });
-          const html = marked.parse(md);
-
-          el.innerHTML = html;
+          el.innerHTML = marked.parse(md);
         } catch (e) {
           el.classList.add('md-error');
           el.textContent = `Could not load ${src}: ${e.message}`;
-        } finally {
-          el.classList.remove('md-loading');
         }
-      }));
-    }
-
-    // Kick off rendering after DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', renderMarkdownBlocks);
-    } else {
-      renderMarkdownBlocks();
-    }
+      }
+    })();
   </script>
 </body>
 </html>

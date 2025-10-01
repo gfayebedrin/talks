@@ -23,15 +23,14 @@ jobs:
         with:
           submodules: true
 
-      - name: Generate talks.md (root, denylist)
+      - name: Generate talks.md (denylist)
         shell: bash
         run: |
           set -euo pipefail
           SKIP_RE='^(reveal|reveal\.js|\.git|\.github|node_modules|vendor|assets|theme|dist|plugin|scripts|tools|test|tests|ci)$'
-
           {
+            echo "# Talks"
             echo
-            # List first-level dirs that contain index.html and are not denied.
             for d in */ ; do
               [ -f "${d}index.html" ] || continue
               name="${d%/}"
