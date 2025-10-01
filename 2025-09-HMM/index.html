@@ -3,12 +3,59 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Reveal.js MWE</title>
+    <title>2025-09 HMMs</title>
 
     <!-- Core CSS -->
     <link rel="stylesheet" href="../reveal.js/dist/reveal.css">
     <!-- Theme (choose another: black, white, league, night, serif, etc.) -->
     <link rel="stylesheet" href="../reveal.js/dist/theme/white.css" id="theme">
+
+    <style>
+        /* Use a clean sans-serif font everywhere */
+        .reveal {
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* Titles: normal case, lighter, smaller */
+        .reveal h1,
+        .reveal h2,
+        .reveal h3 {
+            text-transform: none;
+            /* disable uppercase */
+            font-weight: 500;
+            /* not too bold */
+            letter-spacing: normal;
+        }
+
+        .reveal h1 {
+            font-size: 1.8em;
+            margin-bottom: 0.5em;
+        }
+
+        .reveal h2 {
+            font-size: 1.4em;
+            margin-bottom: 0.4em;
+        }
+
+        .reveal h3 {
+            font-size: 1.2em;
+            margin-bottom: 0.3em;
+        }
+
+        /* Body text */
+        .reveal p {
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        /* Lists */
+        .reveal ul,
+        .reveal ol {
+            font-size: 1em;
+            line-height: 1.5;
+        }
+    </style>
+
 
     <!-- Code highlight theme -->
     <link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css">
