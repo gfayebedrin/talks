@@ -212,8 +212,11 @@ Note: P-P plot: plots two CDF against each other
 <!-- $P(\tau) \propto \tau^{K-1} e^{-\tau/D}$ -->
 
 ![Average dwell time](figures/poster/dwell_times_avg_gamma_fit.svg)
+![Model agreement](figures/poster/dwell_times_model_emp_agreement.svg)
 
-Note: Q-Q plot: quantile-quantile
+Note:
+Q-Q plot: quantile-quantile  
+Histogram computed from data, but very good agreement with transition matrix.
 
 --
 
@@ -221,8 +224,16 @@ Note: Q-Q plot: quantile-quantile
 
 ![Overall dwell time](figures/poster/dwell_times_overall_power_fit.svg)
 
+Footnote:
+$/\mkern-5mu/$ Ponce-Alvarez et al. (2018, *Neuron*), Wang et al. (2025, *eLife*)
 
-Note: Aggregating across all states: overall dwell time distribution follows a power law. This is consistent with a mixture of exponentials with gamma-distributed timescales — i.e. the brain operates across a continuum of timescales.
+
+
+Note: Aggregating across all states: overall dwell time distribution follows a power law. This is consistent with a mixture of exponentials with gamma-distributed timescales — i.e. the brain operates across a continuum of timescales.  
+
+German Sumbre paper: Whole-Brain Neuronal Activity Displays Crackling Noise Dynamics 
+
+Quan Wen: The Geometry and Dimensionality of Brain-wide Activity (sample random subsets of neurons to see what changes with scale, find that the structure of the covariance is scale invariant)
 
 ---
 
@@ -241,52 +252,55 @@ Note:
 Extreme value theory on characteristic time for each state: $\tau_\text{max} \propto \theta \log N$ for Gamma dist with $N$ samples.  
 But the scale parameter shrinks, so it does not explain the log. So the log must come from the state space getting larger (small world network).
 
----
-
-## Model–empirical agreement
-
-<img src="figures/poster/dwell_times_model_emp_agreement.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
-
-Note: Predicted vs empirical dwell time statistics. The HMM-RBM reproduces the observed distributions.
-
----
-
-# Hierarchical timescales
-
-As $N$ increases, states split hierarchically
-
-<img src="figures/poster/dwell_times_mixing_times.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
-
-Note: Mixing times as a function of N. Larger models have longer mixing times — the slow global structure persists.
-
 --
 
-<img src="figures/poster/dwell_times_maximum.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
+<!-- ## Fast dynamics in bigger models -->
 
-Note: Maximum dwell time vs N — consistent with the log(N) prediction horizon. The slow timescale sets the ceiling for predictability.
+![Dwell time avg fit](figures/poster/dwell_time_avg_fit.svg)
+
+
+
+Note:
+What we also get is that the larger the model, the faster the dynamics.
 
 ---
 
-# Individuality
+## Hierarchical states
 
-**Species** shares the macro-states
-→ slow global structure, conserved across fish
+![Hirearchy](figures/HMM/hierarchy.svg)
 
-**Individual** dictates the micro-trajectories
-→ fast local computations, unique fingerprint
+$$I(S; B) = D_{KL}(p_{SB} \Vert p_S p_B)$$
 
-<br>
+Note:
+Small=few states, big = detailed.  
+Score how much knowledge of the small model you have when you know the big model state.  
+Good score = very hierarchic.  
+Increasing $N$ = states split into more detailed states.
 
-Individuality emerges at finer scales as $N$ increases
 
-Note: The species-level macro-states are the universal scaffold. Individual differences appear in the fine-grained transition dynamics — which micro-state you visit next, and for how long.
+---
+
+## Individuality emerges at finer scales
+
+![Individuality](figures/HMM/individuality.svg)
+
+Note:
+Gray line = one pair of 2 fish.  
+Compare transition matrices.
+
+Note:
+By describing the data at different scales, we find that the brain operates at diﬀerent time scales: a "slow" global structure, well conserved across individuals, that orchestrates "fast" local computations.
 
 ---
 
 # Perspectives
 
-- What neural mechanism physically defines dwell times?
-- Introduce visual / optogenetic stimuli: does a model trained on spontaneous activity remain predictive of evoked responses?
-- Force transitions to target downstream states
-- Sparse transition matrix (temperature annealing + threshold)
-- HMM with $K > 1$ hidden vectors per state
+![opto](figures/perspectives/opto.png) <!-- .element: style="width:25%" -->
+![manifold](figures/perspectives/perturbation_manifold.jpg) <!-- .element: style="width:50%" -->
+
+Footnote:
+Image from Jazayeri & Afraz (2017, *Neuron*)
+
+Note:
+- Visual stimuli and optogenetic perturbations: are we still predictive? 
+- Optogenetics: can we force the system to go where we want? Luca Mazzucato: perturbation result does not depend on starting point.
