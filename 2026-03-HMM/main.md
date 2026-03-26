@@ -71,6 +71,9 @@ Connection with RBMs: Mehta & Schwab 2014 (stacking RBMs is equivalent to Kadano
 - 30 min @ 2.5 Hz
 - 6 fish
 
+Footnote:
+Wolf et al. (2015, *Nature Methods*), Panier et al. (2023)
+
 Note:
 - Not noise: structured, metabolically expensive (~20% of energy budget)
 - Constrains how the brain responds to stimuli
@@ -78,77 +81,97 @@ Note:
 
 --
 
-<video data-autoplay data-src="figures/intro/slice_data.mp4" controls style="max-height: 550px; width: auto;"></video>
+<video data-autoplay data-src="figures/intro/slice_data.mp4" controls style="max-height: 600px; width: auto;"></video>
 
 ---
 
-# The HMM-RBM
+## Compositionnal Restricted Boltzmann machines
 
-HMM whose emission distributions are RBMs
+![cRBM](figures/intro/plas-rbm.png)
 
-<img src="figures/sep25/hmm1.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
+$$P(\mathbf{v}, \mathbf{h}) = \frac{1}{Z}e^{-\beta E(\mathbf{v}, \mathbf{h})} = \frac{1}{Z}\exp\left( \sum_i g_i v_i + \sum_{i,\mu} w_{i\mu} v_i h_\mu - \sum_\mu \mathcal{U}_\mu(h_\mu) \right)$$
+
+Footnote: Van der Plas et al. (2023, *eLife*)
+
+Note:
+- Defined as $1 \ll m \ll M$ where $m(t)$ is number of active HUs
+- $M \sim 10^2$
+- Compositional phase:
+  - double-reLU hidden potential
+  - $L_1$ regularization on the weights (sparse)
+  - Variance of HUs =1, average =0
+
+---
+## Latent-aligned RBMs
+
+![LaRBM](figures/intro/teacher-student.png)
+
+$\mathcal{L}_\text{Student}=(1-\lambda)\langle \log P(\mathbf{v}) \rangle_\text{Data} + \lambda \langle \log P(\mathbf{h}) \rangle_\text{Teacher}$
+
+Footnote: Dommanget-Kott et al. (2025)
+
+Note: $\lambda=0.5$
 
 --
 
+![LaRBM](figures/intro/LaRBM.svg)
+
+Footnote: Dommanget-Kott (unpublished)
+
+Note: autocorrelation of hidden units decays after several seconds
+
+---
+
+## State RBM
+
+![sRBM](figures/sRBM/sRBM.svg)
+ 
+Note:
+- a likely state in fish 1 is likely in fish 2
+- transitions are not well conserved
+Here we cluster, then look at dynamics. Mehta and Schwab: clustering like this is coarse graining, describing the neural activity in terms of a composition of neural assemblies.
+
+One limit of the sRBM: because they must be compositional, state definitions are not independant.
+
+---
+
+## Hidden Markov models
+
+<img src="figures/HMM/hmm1.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
+
+--
+
+## HMM-RBM
+
 Each state $s$ is represented by one hidden vector $\mathbf{h}^s$
 
-<img src="figures/sep25/hmm2.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
+<img src="figures/HMM/hmm2.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
 
 Note: HMM parametrized by $S \times S$ transition matrix and $S$ hidden vectors
 
 --
 
-<img src="figures/sep25/hmm_h_space.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
-
-Note: The hidden space is partitioned into S regions, one per state. Viterbi decoding assigns each time point to the most likely state.
-
----
-
-# A shared state vocabulary
-
-Joint training on concatenated data from multiple fish
-
-<img src="figures/poster/HMM-fig-v2.svg" style="width: 85%; height: auto; display: block; margin: auto;" />
-
-Note: States are defined in a shared latent space. All individuals share the same repertoire of global brain states — the density peaks overlap perfectly.
-
---
-
-<img src="figures/poster/example_state_maps.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
-
-Note: State maps (spatial patterns of each hidden vector) are consistent across individuals. The species shares the macro-states.
+![HMM-RBM](figures/HMM/hmm-rbm.svg)
+ 
+Note:
+One limit of the sRBM: because they must be compositional, state definitions are not independant.
+HMM-RBM states can be defined as any point in latent space.
+This results in the RBM-HMM being able to distribute data more evenly between states (higher entropy description).
 
 ---
 
-# sRBM vs HMM-RBM
 
-Two ways to partition the latent space:
-- **sRBM**: stack a second RBM on the hidden layer
-- **HMM-RBM**: learn states jointly with Markovian dynamics
-
-<img src="figures/poster/conf_matrix_sRBM_HMMRBM_N32_Michel.svg" style="width: 65%; height: auto; display: block; margin: auto;" />
-
-Note: Confusion matrix between Viterbi decodings of sRBM and HMM-RBM (N=32, same data). High agreement confirms both methods recover the same underlying state structure.
-
----
 
 # Predictability
 
-The HMM-RBM is **generative**: it can forecast future brain states.
+<img src="figures/HMM/predictability.svg" style="width: 80%; height: auto; display: block; margin: auto;"/>
 
-$$\mathrm{BCE}(t) = -\frac{1}{N} \sum_i \left[ v_i \log \tilde v_i + (1-v_i)\log(1-\tilde v_i) \right]$$
+$$\mathrm{BCE} = -\frac{1}{N} \sum_i \left[ v_i \log \tilde v_i + (1-v_i)\log(1-\tilde v_i) \right]$$
 
---
-
-<img src="figures/poster/predictive_power_all_fish.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
-
-Note: Prediction error vs steps ahead, averaged across fish. Model beats both the steady-state baseline and the "no-dynamics" baseline — intrinsic dynamics are truly informative.
-
---
-
-<img src="figures/poster/predictive_power_ss-minus-pred_all-fish.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
-
-Note: Gain over steady-state prediction.
+Note:
+Entropy of super simple case where 1 neuron in 50 is active: 0.1  
+Predictability is a good measure of performance  
+look at $N$ to see what's best (elbow?)
 
 --
 
@@ -156,53 +179,69 @@ Prediction time scales logarithmically with $N$
 
 <img src="figures/poster/predictive_power_t_pred_fit.svg" style="width: 70%; height: auto; display: block; margin: auto;" />
 
-Note: t_pred ~ log(N). Hints at a small-world structure of the transition matrix — and foreshadows the dwell-time story.
+Note:
+We don't get an elbow, we get a clean log (except $N=2$, the only reversible model). Let's try to understand this log.
 
 --
 
-<img src="figures/poster/state_predictions_N32_Carolinne.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
+$P^t=\sum_i \lambda_i^t \ket{i} \bra{i}$
 
-Note: Example of state sequence prediction on held-out data (N=32, fish Carolinne).
+$\text{Score}(t) = \bra{f} P^t \ket{\rho_0} - \braket{f|\pi}$
 
---
+$= \sum_{i \geq 2} \alpha_i \exp(t \ln \lambda_i)$
 
-<img src="figures/poster/prediction_map_5_steps_Marianne.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
-
-Note: Spatial map of prediction accuracy at t+5 steps (fish Marianne). Some brain regions are more predictable than others.
+Note:
+Score depends on a mixture of exponentials of different scales.  
+These scales (eigen values of P) are related to dwell times.
 
 ---
 
-# Dwell time distributions
+## Dwell times in each state
 
-Are state dwell times exponentially distributed (pure Markov)?
+<!-- Are state dwell times exponentially distributed (pure Markov)? -->
 
-<img src="figures/poster/dwell_times_each_state_exp_fit.svg" style="width: 85%; height: auto; display: block; margin: auto;" />
+![Per-state dwell time](figures/poster/dwell_times_each_state_exp_fit.svg)
+<!-- <img src="figures/poster/dwell_times_each_state_exp_fit.svg" style="width: 85%; height: auto; display: block; margin: auto;" /> -->
 
-Note: Per-state dwell time distributions with exponential fits. Clear deviation from exponential — consistent with a gamma distribution (shape K > 1). This means the state-level dynamics are non-Markovian: the brain "lingers" before switching.
-
---
-
-Gamma fits: $P(\tau) \propto \tau^{K-1} e^{-\tau/D}$
-
-<img src="figures/poster/dwell_times_avg_gamma_fit.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
-
-Note: Average dwell time per state, with gamma fit. Both K and D are well-defined and vary systematically with N.
+Note: P-P plot: plots two CDF against each other
 
 --
 
-<img src="figures/poster/dwell_time_K_D_fit_values.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
+## Average dwell times
 
-Note: K and D fit values as a function of N. Average dwell time ⟨τ⟩ = KD ~ 1/N — finer partition → shorter visits.
+<!-- $P(\tau) \propto \tau^{K-1} e^{-\tau/D}$ -->
+
+![Average dwell time](figures/poster/dwell_times_avg_gamma_fit.svg)
+
+Note: Q-Q plot: quantile-quantile
 
 --
 
 ## Overall distribution
 
-<img src="figures/poster/dwell_times_overall_power_fit.svg" style="width: 80%; height: auto; display: block; margin: auto;" />
+![Overall dwell time](figures/poster/dwell_times_overall_power_fit.svg)
+
 
 Note: Aggregating across all states: overall dwell time distribution follows a power law. This is consistent with a mixture of exponentials with gamma-distributed timescales — i.e. the brain operates across a continuum of timescales.
 
+---
+
+But where does the $\log N$ come from?
+
+<img src="figures/poster/predictive_power_t_pred_fit.svg" style="width: 70%; height: auto; display: block; margin: auto;" />
+
+Note:
+It depends on the largest eigen value: how fast does the markov chain mix (ie decay to steady state)?
+
 --
+
+![](figures/HMM/logN_explanation.svg)
+
+Note:
+Extreme value theory on characteristic time for each state: $\tau_\text{max} \propto \theta \log N$ for Gamma dist with $N$ samples.  
+But the scale parameter shrinks, so it does not explain the log. So the log must come from the state space getting larger (small world network).
+
+---
 
 ## Model–empirical agreement
 

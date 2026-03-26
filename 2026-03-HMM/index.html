@@ -60,6 +60,23 @@
         .small-text-slide li {
             font-size: 0.6em !important;
         }
+
+        /* Display math only */
+        .reveal .katex-display {
+            font-size: 0.65em;
+        }
+
+        /* Footnotes */
+        .reveal .slide-footnote {
+            position: absolute;
+            bottom: 5px;
+            font-size: 0.45em;
+            border-top: 1px solid #aaa;
+            padding-top: 6px;
+            padding-left: 10px;
+            padding-right: 10px;
+            text-align: left;
+        }
     </style>
 
 
@@ -91,6 +108,23 @@
             slideNumber: true,          // Show slide numbers
             transition: 'none',        // none/fade/slide/convex/concave/zoom
             plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+
+        Reveal.on('ready', () => {
+            document.querySelectorAll('.reveal .slides section').forEach(slide => {
+                if (slide.querySelector('section')) return; // skip parent sections
+                slide.querySelectorAll('p').forEach(p => {
+                    if (p.textContent.trimStart().startsWith('Footnote:')) {
+                        const footnote = document.createElement('div');
+                        footnote.className = 'slide-footnote';
+                        footnote.innerHTML = p.innerHTML.replace(/^Footnote:\s*/, '');
+                        p.remove();
+                        slide.classList.add('has-footnote');
+                        slide.style.height = Reveal.getConfig().height + 'px';
+                        slide.appendChild(footnote);
+                    }
+                });
+            });
         });
     </script>
 </body>
