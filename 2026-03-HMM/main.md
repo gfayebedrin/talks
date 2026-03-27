@@ -288,7 +288,6 @@ Note:
 Gray line = one pair of 2 fish.  
 Compare transition matrices.
 
-Note:
 By describing the data at different scales, we find that the brain operates at diﬀerent time scales: a "slow" global structure, well conserved across individuals, that orchestrates "fast" local computations.
 
 ---
