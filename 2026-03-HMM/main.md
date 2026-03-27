@@ -175,15 +175,6 @@ look at $N$ to see what's best (elbow?)
 
 --
 
-Prediction time scales logarithmically with $N$
-
-<img src="figures/poster/predictive_power_t_pred_fit.svg" style="width: 70%; height: auto; display: block; margin: auto;" />
-
-Note:
-We don't get an elbow, we get a clean log (except $N=2$, the only reversible model). Let's try to understand this log.
-
---
-
 $P^t=\sum_i \lambda_i^t \ket{i} \bra{i}$
 
 $\text{Score}(t) = \bra{f} P^t \ket{\rho_0} - \braket{f|\pi}$
@@ -193,6 +184,15 @@ $= \sum_{i \geq 2} \alpha_i \exp(t \ln \lambda_i)$
 Note:
 Score depends on a mixture of exponentials of different scales.  
 These scales (eigen values of P) are related to dwell times.
+
+--
+
+Prediction time scales logarithmically with $N$
+
+<img src="figures/poster/predictive_power_t_pred_fit.svg" style="width: 70%; height: auto; display: block; margin: auto;" />
+
+Note:
+We don't get an elbow, we get a clean log (except $N=2$, the only reversible model). Let's try to understand this log.
 
 ---
 
