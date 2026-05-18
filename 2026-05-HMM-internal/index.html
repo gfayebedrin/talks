@@ -77,6 +77,42 @@
             padding-right: 10px;
             text-align: left;
         }
+
+        /* Full-window drifting checkerboard overlay (toggled per-slide in JS).
+           z-index 9 keeps it below reveal's progress(10)/controls(11)/slide-number(31). */
+        #ckr-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9;
+            background: #000;
+            overflow: hidden;
+        }
+
+        #ckr-overlay>div {
+            position: absolute;
+            inset: -400px;
+            background:
+                linear-gradient(45deg, #000 25%, transparent 25%),
+                linear-gradient(-45deg, #000 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #000 75%),
+                linear-gradient(-45deg, transparent 75%, #000 75%);
+            background-color: #fff;
+            background-size: 320px 320px;
+            background-position: 0 0, 0 160px, 160px -160px, -160px 0;
+            animation: ckr 24s linear infinite;
+        }
+
+        @keyframes ckr {
+            0%   { transform: translate(0, 0) }
+            12.5%{ transform: translate(-320px, 0) }
+            25%  { transform: translate(0, 0) }
+            37.5%{ transform: translate(320px, 0) }
+            50%  { transform: translate(0, 0) }
+            62.5%{ transform: translate(0, 320px) }
+            75%  { transform: translate(0, 0) }
+            87.5%{ transform: translate(0, -320px) }
+            100% { transform: translate(0, 0) }
+        }
     </style>
 
 
@@ -127,6 +163,29 @@
                 });
             });
         });
+
+        // Full-window checkerboard: show a body-level overlay (outside reveal's
+        // scaled .slides transform) whenever the active slide carries a
+        // .ckr-fullscreen marker, so it truly fills any screen/aspect ratio.
+        (function () {
+            function syncCheckerboard() {
+                const slide = Reveal.getCurrentSlide();
+                const wanted = !!(slide && slide.querySelector('.ckr-fullscreen')) && !Reveal.isOverview();
+                let overlay = document.getElementById('ckr-overlay');
+                if (wanted && !overlay) {
+                    overlay = document.createElement('div');
+                    overlay.id = 'ckr-overlay';
+                    overlay.appendChild(document.createElement('div'));
+                    document.body.appendChild(overlay);
+                } else if (!wanted && overlay) {
+                    overlay.remove();
+                }
+            }
+            Reveal.on('ready', syncCheckerboard);
+            Reveal.on('slidechanged', syncCheckerboard);
+            Reveal.on('overviewshown', syncCheckerboard);
+            Reveal.on('overviewhidden', syncCheckerboard);
+        })();
     </script>
 </body>
 
