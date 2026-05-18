@@ -85,9 +85,7 @@ Note: Teacher RBM on fish 1; student RBM on fish 2 aligned to the teacher's late
 
 --
 
-![LaRBM](figures/intro/LaRBM.svg)
-
-Footnote: Dommanget-Kott (unpublished)
+<div class="r-svg-layers" data-src="figures/intro/LaRBM.svg" data-base="Layer 1" data-include="Layer 2,Layer 3" style="width:82%; margin:20px auto;"></div>
 
 Note: autocorrelation of hidden units decays after several seconds
 
@@ -95,7 +93,7 @@ Note: autocorrelation of hidden units decays after several seconds
 
 ## A state RBM discretizes the dynamics
 
-![sRBM](figures/sRBM/sRBM.svg)
+<div class="r-svg-layers" data-src="figures/sRBM/sRBM.svg" data-base="Layer 1" data-include="Layer 2,Layer 3" style="width:82%; margin:20px auto;"></div>
  
 Note:
 - a likely state in fish 1 is likely in fish 2
@@ -238,14 +236,37 @@ By describing the data at different scales, we find that the brain operates at d
 
 ---
 
-# Perspectives
+## Summary
 
-![opto](figures/perspectives/opto.png) <!-- .element: style="width:25%" -->
-![manifold](figures/perspectives/perturbation_manifold.jpg) <!-- .element: style="width:50%" -->
+<div style="display:flex; align-items:flex-start; justify-content:center; gap:48px; margin-top:24px;">
+  <img style="flex:1; max-width:35%;" src="figures/perspectives/hmmrbm.svg">
+  <div style="align-self:stretch; border-left:1px solid #bbb;"></div>
+  <div style="flex:1; max-width:42%;">
+    <ul>
+      <li>Spontaneous activity is structured</li>
+      <li>How conserved it is depends on the description scale</li>
+      <li>The models sample a continuum of timescales</li>
+      <li>Individuality is captured at finer scales</li>
+    </ul>
+  </div>
+</div>
 
-Footnote:
-Image from Jazayeri & Afraz (2017, *Neuron*)
+Note:
+- Generative models of $P(\mathbf{v})$, fit at several description scales
+- RBM → sRBM → HMM-RBM
+- Predictive & generative, **transferable across fish**
+- Spontaneous activity is structured, not noise
+- How conserved it is depends on the description scale
+- The models sample a continuum of timescales (slow global ↔ fast local)
+- Fine enough to identify siblings from spontaneous activity
+
+
+
+---
+
+<div class="ckr-fullscreen"></div>
 
 Note:
 - Visual stimuli and optogenetic perturbations: are we still predictive? 
 - Optogenetics: can we force the system to go where we want? Luca Mazzucato: perturbation result does not depend on starting point.
+
