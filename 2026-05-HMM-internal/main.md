@@ -153,8 +153,8 @@ This results in the RBM-HMM being able to distribute data more evenly between st
 
 <!-- Are state dwell times exponentially distributed (pure Markov)? -->
 
-![Per-state dwell time](figures/poster/dwell_times_each_state_exp_fit.svg)
-<!-- <img src="figures/poster/dwell_times_each_state_exp_fit.svg" style="width: 85%; height: auto; display: block; margin: auto;" /> -->
+![Per-state dwell time](figures/HMM/dwell_times_each_state_exp_fit.svg)
+<!-- <img src="figures/HMM/dwell_times_each_state_exp_fit.svg" style="width: 85%; height: auto; display: block; margin: auto;" /> -->
 
 Note: P-P plot: plots two CDF against each other
 
@@ -166,8 +166,8 @@ Note: P-P plot: plots two CDF against each other
 
 <!-- $P(\tau) \propto \tau^{K-1} e^{-\tau/D}$ -->
 
-![Average dwell time](figures/poster/dwell_times_avg_gamma_fit.svg)
-![Model agreement](figures/poster/dwell_times_model_emp_agreement.svg)
+![Average dwell time](figures/HMM/dwell_times_avg_gamma_fit.svg)
+![Model agreement](figures/HMM/dwell_times_model_emp_agreement.svg)
 
 Note:
 Q-Q plot: quantile-quantile  
@@ -179,7 +179,7 @@ Histogram computed from data, but very good agreement with transition matrix.
 
 <img src="figures/HMM/state-seq.svg" style="width:42%; display:block; margin:6px auto 18px;" />
 
-![Overall dwell time](figures/poster/dwell_times_overall_power_fit.svg)
+![Overall dwell time](figures/HMM/dwell_times_overall_power_fit.svg)
 
 Footnote:
 $/\mkern-5mu/$ Ponce-Alvarez et al. (2018, *Neuron*), Wang et al. (2025, *eLife*)
@@ -239,7 +239,7 @@ By describing the data at different scales, we find that the brain operates at d
 ## Summary
 
 <div style="display:flex; align-items:flex-start; justify-content:center; gap:48px; margin-top:24px;">
-  <img style="flex:1; max-width:35%;" src="figures/perspectives/hmmrbm.svg">
+  <img style="flex:1; max-width:35%;" src="figures/HMM/hmmrbm.svg">
   <div style="align-self:stretch; border-left:1px solid #bbb;"></div>
   <div style="flex:1; max-width:42%;">
     <ul>
