@@ -273,15 +273,17 @@ Note:
 
 --- 
 
-## Conferences
+## Scientific production
 
-- *Maturation and Plasticity in Biological and Artiﬁcial Neural Networks*, Cargèse, 2024
-- *GDR NeuralNet*, Bordeaux, 2025 - Poster
-- *Cosyne*, Lisbon, 2026 - Poster
-- *Approches quantitatives du vivant*, Aussois, 2026 - Poster
+- *GDR NeuralNet*, Bordeaux, 2025 - **Poster**
+- *Cosyne*, Lisbon, 2026 - **Poster**
+- *Approches quantitatives du vivant*, Aussois, 2026 - **Poster**
+- *Cross-Individual Translation of Spontaneous Zebrafish Brain Activity through a Shared Latent Representation*, Dommanget-Kott et al., PNAS, 2026 - **Third author**
 
-Future:
-- *Bernstein Computational Neuroscience*, Frankfurt, 2026 - Applied for a talk
+
+**Future:**
+- *Bernstein Computational Neuroscience*, Frankfurt, 2026 - **Applied for a talk**
+- *Spontaneous brain dynamics span a continuum of timescales shared across zebrafish larvae* - **First author, draft**
 
 ---
 
@@ -317,10 +319,15 @@ Next year:
 - Postdoc in France to apply for CNRS
 
 Note:
+- i like complexity in neuroscience, we don't know a lot so simple models are still powerful
 - After defense, leave for a postdoc
 - Marie Curie deadline in early september: should i panic?
 
 </div>
+
+---
+
+<!-- .slide: data-background-color="#000000" -->
 
 ---
 
