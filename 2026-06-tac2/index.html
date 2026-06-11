@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>2026-06 TAC 2</title>
+
+    <!-- Inter web font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+    <!-- Theme (choose another: black, white, league, night, serif, etc.) -->
+    <link rel="stylesheet" href="../reveal.js/dist/theme/white.css" id="theme">
+
+    <style>
+        /* ============================================================
+           Palette & type tokens
+           Heading hue = the dark slate-teal of last year's Beamer header;
+           accent = its brick rule. One accent, used sparingly.
+           Tweak everything from here.
+           ============================================================ */
+        :root {
+            --ink:        #272d31;   /* body text            */
+            --ink-strong: #1b2e35;   /* headings (slate-teal) */
+            --muted:      #69737a;   /* captions, footnotes, slide number */
+            --accent:     #9b4426;   /* rules, bullets, links, progress */
+            --accent-tint: rgba(155, 68, 38, .10);
+            --rule:       #e2e6e8;   /* hairlines            */
+            --hairline:   #d3d9dc;   /* footnote separator   */
+            --code-bg:    #f5f6f7;
+
+            --font-sans: "Inter", "Century Gothic", system-ui, -apple-system,
+                         "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular",
+                         "Cascadia Code", Menlo, Consolas, monospace;
+        }
+
+        /* Base */
+        .reveal {
+            font-family: var(--font-sans);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-feature-settings: "kern" 1, "liga" 1;
+        }
+
+        /* Titles: normal case, refined weight, slate ink */
+        .reveal h1,
+        .reveal h2,
+        .reveal h3 {
+            text-transform: none;
+            font-weight: 600;
+            letter-spacing: -.005em;
+            color: var(--ink-strong);
+        }
+
+        .reveal h1 {
+            font-size: 1.4em;
+            margin-bottom: 0.5em;
+            line-height: 1.15;
+            letter-spacing: -.015em;
+        }
+
+        .reveal h2 {
+            font-size: 1.1em;
+            margin-bottom: 0.4em;
+        }
+
+        .reveal h3 {
+            font-size: 1.0em;
+            margin-bottom: 0.3em;
+            font-weight: 500;
+        }
+
+        /* Slim centred accent rule under section titles.
+           Absolutely positioned in the existing bottom margin → zero reflow,
+           so no slide can overflow because of it. */
+        .reveal h1,
+        .reveal h2 { position: relative; }
+
+        .reveal h1::after,
+        .reveal h2::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 3px;
+            border-radius: 3px;
+            background: var(--accent);
+        }
+
+        .reveal h1::after { bottom: -.16em; width: 2.8rem; }
+        .reveal h2::after { bottom: -.14em; width: 2.1rem; opacity: .9; }
+
+        /* Body text */
+        .reveal p {
+            font-size: 0.8em;
+            line-height: 1.5;
+        }
+
+        /* Lists */
+        .reveal ul,
+        .reveal ol,
+        .reveal li {
+            font-size: 0.8em;
+            line-height: 1.5;
+        }
+
+        .reveal li { margin: 0.12em 0; }
+        .reveal ul li::marker { color: var(--accent); }
+        .reveal ol li::marker { color: var(--accent); font-weight: 600; }
+
+        .small-text-slide ul,
+        .small-text-slide li {
+            font-size: 0.6em !important;
+        }
+
+        /* Emphasis & links */
+        .reveal strong { color: var(--ink-strong); font-weight: 600; }
+
+        .reveal a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color .15s ease;
+        }
+        .reveal a:hover { border-bottom-color: currentColor; }
+
+        /* Display math only */
+        .reveal .katex-display {
+            font-size: 0.65em;
+        }
+
+        /* Footnotes */
+        .reveal .slide-footnote {
+            position: absolute;
+            bottom: 5px;
+            font-size: 0.45em;
+            color: var(--muted);
+            border-top: 1px solid var(--hairline);
+            padding: 6px 10px 0;
+            text-align: left;
+        }
+
+        /* Inline code (fenced blocks keep the monokai theme below) */
+        .reveal :not(pre) > code {
+            font-family: var(--font-mono);
+            font-size: 0.85em;
+            background: var(--code-bg);
+            color: var(--ink-strong);
+            padding: .1em .35em;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+        }
+
+        .reveal pre {
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+        }
+
+        /* Tables — clean, ruled, academic (only if you add any) */
+        .reveal table {
+            border-collapse: collapse;
+            font-size: 0.72em;
+            margin: 0.5em auto;
+        }
+        .reveal table th,
+        .reveal table td {
+            padding: .4em .75em;
+            border: none;
+            border-bottom: 1px solid var(--rule);
+            text-align: left;
+        }
+        .reveal table th {
+            color: var(--ink-strong);
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent);
+        }
+        .reveal table tr:last-child td { border-bottom: 1px solid var(--ink-strong); }
+
+        /* Blockquote */
+        .reveal blockquote {
+            border: none;
+            border-left: 3px solid var(--accent);
+            background: var(--accent-tint);
+            box-shadow: none;
+            font-style: normal;
+            color: var(--ink);
+            padding: .5em 1em;
+        }
+
+        /* Chrome: progress bar, nav controls, slide number */
+        .reveal .progress { color: var(--accent); height: 3px; }
+        .reveal .controls { color: var(--accent); }
+        .reveal .slide-number {
+            background: transparent;
+            color: var(--muted);
+            font-size: 0.5em;
+            font-weight: 500;
+        }
+
+        ::selection { background: var(--accent-tint); }
+
+        /* Full-window drifting checkerboard overlay (toggled per-slide in JS).
+           z-index 9 keeps it below reveal's progress(10)/controls(11)/slide-number(31). */
+        #ckr-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9;
+            background: #000;
+            overflow: hidden;
+        }
+
+        #ckr-overlay>div {
+            position: absolute;
+            inset: -400px;
+            background:
+                linear-gradient(45deg, #000 25%, transparent 25%),
+                linear-gradient(-45deg, #000 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #000 75%),
+                linear-gradient(-45deg, transparent 75%, #000 75%);
+            background-color: #fff;
+            background-size: 320px 320px;
+            background-position: 0 0, 0 160px, 160px -160px, -160px 0;
+            animation: ckr 24s linear infinite;
+        }
+
+        @keyframes ckr {
+            0%   { transform: translate(0, 0) }
+            12.5%{ transform: translate(-320px, 0) }
+            25%  { transform: translate(0, 0) }
+            37.5%{ transform: translate(320px, 0) }
+            50%  { transform: translate(0, 0) }
+            62.5%{ transform: translate(0, 320px) }
+            75%  { transform: translate(0, 0) }
+            87.5%{ transform: translate(0, -320px) }
+            100% { transform: translate(0, 0) }
+        }
+    </style>
+
+
+    <!-- Code highlight theme -->
+    <link rel="stylesheet" href="../reveal.js/dist/plugin/highlight/monokai.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown="main.md" data-separator="^---" data-separator-vertical="^--"
+                data-separator-notes="^Note:" data-charset="utf-8">
+            </section>
+        </div>
+    </div>
+
+
+    <!-- Reveal.js core -->
+    <script src="../reveal.js/dist/reveal.js"></script>
+    <!-- Plugins -->
+    <script src="../reveal.js/dist/plugin/markdown.js"></script>
+    <script src="../reveal.js/dist/plugin/highlight.js"></script>
+    <script src="../reveal.js/dist/plugin/notes.js"></script>
+    <script src="../reveal.js/dist/plugin/math.js"></script>
+    <script src="plugin/reveal-svg-layers.umd.js"></script>
+
+    <script>
+        Reveal.initialize({
+            hash: true,                 // Update URL as you navigate
+            slideNumber: true,          // Show slide numbers
+            transition: 'none',        // none/fade/slide/convex/concave/zoom
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, SvgLayers],
+        });
+
+        Reveal.on('ready', () => {
+            document.querySelectorAll('.reveal .slides section').forEach(slide => {
+                if (slide.querySelector('section')) return; // skip parent sections
+                slide.querySelectorAll('p').forEach(p => {
+                    if (p.textContent.trimStart().startsWith('Footnote:')) {
+                        const footnote = document.createElement('div');
+                        footnote.className = 'slide-footnote';
+                        footnote.innerHTML = p.innerHTML.replace(/^Footnote:\s*/, '');
+                        p.remove();
+                        slide.classList.add('has-footnote');
+                        slide.style.height = Reveal.getConfig().height + 'px';
+                        slide.appendChild(footnote);
+                    }
+                });
+            });
+        });
+
+        // Full-window checkerboard: show a body-level overlay (outside reveal's
+        // scaled .slides transform) whenever the active slide carries a
+        // .ckr-fullscreen marker, so it truly fills any screen/aspect ratio.
+        (function () {
+            function syncCheckerboard() {
+                const slide = Reveal.getCurrentSlide();
+                const wanted = !!(slide && slide.querySelector('.ckr-fullscreen')) && !Reveal.isOverview();
+                let overlay = document.getElementById('ckr-overlay');
+                if (wanted && !overlay) {
+                    overlay = document.createElement('div');
+                    overlay.id = 'ckr-overlay';
+                    overlay.appendChild(document.createElement('div'));
+                    document.body.appendChild(overlay);
+                } else if (!wanted && overlay) {
+                    overlay.remove();
+                }
+            }
+            Reveal.on('ready', syncCheckerboard);
+            Reveal.on('slidechanged', syncCheckerboard);
+            Reveal.on('overviewshown', syncCheckerboard);
+            Reveal.on('overviewhidden', syncCheckerboard);
+        })();
+    </script>
+</body>
+
+</html>
