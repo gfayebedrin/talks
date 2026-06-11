@@ -289,10 +289,10 @@ Note:
 
 ## Training
 
-- Animal experimentation: 57h
-- Cargèse 2026: 20h
-- Rendre son sujet accessible: 8h
-- Training for Chargé de mission d'enseignement: 17h
+- Animal experimentation, 2024: 57h
+- Cargèse, 2024: 20h
+- Rendre son sujet accessible, 2025: 8h
+- Training for Chargé de mission d'enseignement, 2026: 17h
 
 Note:
 Teaching:
