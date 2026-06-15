@@ -217,6 +217,8 @@ big remaining question: is this related to behaviour? something else?
 
 ## What's next?
 
+<div style="text-align:left; width:100%; margin:0 auto; font-size: 0.7em">
+
 *Behaviour*
 - Can states we found in spontaneous activity be interpreted in terms of behaviour?
 
@@ -225,17 +227,23 @@ big remaining question: is this related to behaviour? something else?
 - Is the representation of stimuli shared between fish?
 - Can we resolve what stimulus was shown from neural activity alone?
 
+*Optogenetics*
+- Can we trigger specific states?
+- What can we learn by varying the stimulation?
+
 *Models*
 - Can we create a model trained on multiple fish that can serve as a reference of functional connectivity?
+</div>
 
 Note:
+- Opto: confirm relaxation time scales? weak stimulations: barrier/discrete or continuous? same response between fish?
 - Models: hard because huge data, theoretical work to do on how to align weights (continuum? other?)
 
 ---
 
 ## Plan for year to come
 
-<div style="text-align:left; width:100%; margin:0 auto;">
+<div style="text-align:left; width:100%; margin:0 auto; font-size: 0.7em">
 
 *Summer*
 - Finish and submit paper
@@ -244,7 +252,7 @@ Note:
 
 *Fall/spring*
 - Analyse data with visual stimuli
-- Experiments: add motor neuron recordings (patch clamp)
+- Experiments: add motor neuron recordings (patch clamp), optogenetics experiments
 - Train models in parallel on multiple fish
 
 *Spring/summer*
@@ -255,6 +263,7 @@ Note:
 Note:
 - Urs Böhm, co supervizes phd student with Volker, Institute of Psychiatry and Neuroscience of Paris, INSERM
 - motor neuron allow to get closed loop experiments -> what happens to the activity? longer time scales?
+- optogenetics: test different areas, different power / perturbative approach
 
 --- 
 
