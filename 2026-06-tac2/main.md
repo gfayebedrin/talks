@@ -116,21 +116,7 @@ Note: autocorrelation of hidden units decays after several seconds
 
 ---
 
-## Modeling the dynamics with an HMM
-
-<img src="figures/dynamics/hmm1.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
-
---
-
 ## The HMM-RBM
-
-Each state $s$ is represented by one hidden vector $\mathbf{h}^s$
-
-<img src="figures/dynamics/hmm2.svg" style="width: 90%; height: auto; display: block; margin: auto;" />
-
-Note: HMM parametrized by $S \times S$ transition matrix and $S$ hidden vectors
-
---
 
 <div class="r-svg-layers" data-src="figures/dynamics/hmm-rbm.svg" data-base="Layer 1" data-include="Layer 2,Layer 3,Layer 4" style="width:82%; margin:20px auto;"></div>
  
@@ -138,53 +124,6 @@ Note:
 One limit of the sRBM: because they must be compositional, state definitions are not independant.
 HMM-RBM states can be defined as any point in latent space.
 This results in the RBM-HMM being able to distribute data more evenly between states (higher entropy description).
-
----
-
-## Per-state dwell times are exponential
-
-<img src="figures/dynamics/state-seq.svg" style="width:42%; display:block; margin:6px auto 18px;" />
-
-<!-- Are state dwell times exponentially distributed (pure Markov)? -->
-
-![Per-state dwell time](figures/dynamics/dwell_times_each_state_exp_fit.svg)
-<!-- <img src="figures/dynamics/dwell_times_each_state_exp_fit.svg" style="width: 85%; height: auto; display: block; margin: auto;" /> -->
-
-Note: P-P plot: plots two CDF against each other
-
---
-
-## Average dwell times follow an inverse Gamma
-
-<img src="figures/dynamics/state-seq.svg" style="width:42%; display:block; margin:6px auto 18px;" />
-
-<!-- $P(\tau) \propto \tau^{K-1} e^{-\tau/D}$ -->
-
-![Average dwell time](figures/dynamics/dwell_times_avg_gamma_fit.svg)
-![Model agreement](figures/dynamics/dwell_times_model_emp_agreement.svg)
-
-Note:
-Q-Q plot: quantile-quantile  
-Histogram computed from data, but very good agreement with transition matrix.
-
---
-
-## Overall dwell times follow a power law
-
-<img src="figures/dynamics/state-seq.svg" style="width:42%; display:block; margin:6px auto 18px;" />
-
-![Overall dwell time](figures/dynamics/dwell_times_overall_power_fit.svg)
-
-Footnote:
-$/\mkern-5mu/$ Ponce-Alvarez et al. (2018, *Neuron*), Wang et al. (2025, *eLife*)
-
-
-
-Note: Aggregating across all states: overall dwell time distribution follows a power law. This is consistent with a mixture of exponentials with gamma-distributed timescales — i.e. the brain operates across a continuum of timescales.  
-
-German Sumbre paper: Whole-Brain Neuronal Activity Displays Crackling Noise Dynamics 
-
-Quan Wen: The Geometry and Dimensionality of Brain-wide Activity (sample random subsets of neurons to see what changes with scale, find that the structure of the covariance is scale invariant)
 
 ---
 
@@ -264,12 +203,58 @@ Note:
 
 <div class="r-svg-layers" data-src="figures/context/first-year-plan.svg" data-base="Layer 1" data-include="Layer 2" style="width:90%; margin:auto;"></div>
 
+Note:
+just to remind, but actually it may be more interesting to stay on a more consistent path
+
+---
+
+## What do these states mean?
+
+Note:
+big remaining question: is this related to behaviour? something else?
+
 ---
 
 ## What's next?
 
-- Produce datasets with evoked or stimulated activity, and apply the model
-- Analyse datasets from other lab members (zebrafish, danionella, with various stimuli: visual, vestibular...)
+*Behaviour*
+- Can states we found in spontaneous activity be interpreted in terms of behaviour?
+
+*Stimuli*
+- What's the impact of stimuli on the dynamics?
+- Is the representation of stimuli shared between fish?
+- Can we resolve what stimulus was shown from neural activity alone?
+
+*Models*
+- Can we create a model trained on multiple fish that can serve as a reference of functional connectivity?
+
+Note:
+- Models: hard because huge data, theoretical work to do on how to align weights (continuum? other?)
+
+---
+
+## Plan for year to come
+
+<div style="text-align:left; width:100%; margin:0 auto;">
+
+*Summer*
+- Finish and submit paper
+- Analyse preliminary data with OMR stimuli, continue experiments with visual stimuli
+- Train and look at feasibility of motor neuron recordings (Urs Böhm)
+
+*Fall/spring*
+- Analyse data with visual stimuli
+- Experiments: add motor neuron recordings (patch clamp)
+- Train models in parallel on multiple fish
+
+*Spring/summer*
+- Valorisation/writing - Defend in fall 2027
+
+</div>
+
+Note:
+- Urs Böhm, co supervizes phd student with Volker, Institute of Psychiatry and Neuroscience of Paris, INSERM
+- motor neuron allow to get closed loop experiments -> what happens to the activity? longer time scales?
 
 --- 
 
@@ -279,7 +264,6 @@ Note:
 - *Cosyne*, Lisbon, 2026 - **Poster**
 - *Approches quantitatives du vivant*, Aussois, 2026 - **Poster**
 - *Cross-Individual Translation of Spontaneous Zebrafish Brain Activity through a Shared Latent Representation*, Dommanget-Kott et al., PNAS, 2026 - **Third author**
-
 
 **Future:**
 - *Bernstein Computational Neuroscience*, Frankfurt, 2026 - **Applied for a talk**
@@ -292,16 +276,17 @@ Note:
 - Animal experimentation, 2024: 57h
 - Cargèse, 2024: 20h
 - Rendre son sujet accessible, 2025: 8h
+- M2 course: Advanced Statistical physics and new applications (F. Van Wijland), 2025: 26h
 - Training for Chargé de mission d'enseignement, 2026: 17h
 
 Note:
 Teaching:
 - mission 128h
 - 60h TP informatics for physics L2
-- 20h TD mechanics L1
+- 24h TD mechanics L1
 Next year:
 - 28h TP optics L3
-- Missing 20h
+- Missing 16h
 
 ---
 
@@ -310,7 +295,6 @@ Next year:
 <div style="text-align:left; width:80%; margin:0 auto;">
 
 - Stay in research, in biophysics, working with theoretical/computational tools
-- Exact domain unclear
 
 <p style="margin-left:1.5em;"><strong>General idea:</strong></p>
 
@@ -319,7 +303,8 @@ Next year:
 - Postdoc in France to apply for CNRS
 
 Note:
-- i like complexity in neuroscience, we don't know a lot so simple models are still powerful
+- what i like in neuro is complexity, we don't know a lot so simple models are still powerful
+- we have more and more data, connectome is coming for the zebra, but the hard part is interpreting and understanding
 - After defense, leave for a postdoc
 - Marie Curie deadline in early september: should i panic?
 
