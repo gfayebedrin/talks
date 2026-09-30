@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 480" width="700" height="480">
+<rect x="3" y="3" width="694" height="474" rx="14" fill="#f5f6f7" stroke="#d3d9dc" stroke-width="3" stroke-dasharray="14 10"/>
+<text x="350.0" y="232.0" text-anchor="middle" font-size="30" font-weight="600" fill="#69737a" font-family="Inter, system-ui, sans-serif">Figure placeholder</text>
+<text x="350.0" y="272.0" text-anchor="middle" font-size="22" fill="#69737a" font-family="Inter, system-ui, sans-serif">Petrucco et al. 2023</text>
+</svg>
