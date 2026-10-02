@@ -67,11 +67,9 @@ Note:
 - HD cells were found in rats, bats and *Drosophila*
 ---
 
-<video data-autoplay loop muted data-src="figures/intro/seelig2015_video6.mp4" style="max-height:440px; width:auto; display:block; margin:10px auto;"></video>
+<video data-autoplay loop muted data-src="figures/intro/seelig2015_video6.mp4" style="max-height:560px; width:auto; display:block; margin:10px auto;"></video>
 
-<div class="paper" style="width:60%;"><span class="title">Neural dynamics for landmark orientation and angular path integration</span><span class="authors">Seelig &amp; Jayaraman, <em>Nature</em>, 2015</span></div>
-
-Footnote: Seelig & Jayaraman (2015), Supplementary Video 6
+Footnote: Seelig & Jayaraman, *Neural dynamics for landmark orientation and angular path integration*, Nature (2015), Supplementary Video 6
 
 Note:
 - Head-fixed *Drosophila* walking on a ball in darkness, 2-photon GCaMP6f imaging of E-PG neurons in the ellipsoid body
