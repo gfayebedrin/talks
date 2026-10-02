@@ -5,226 +5,13 @@
     <meta charset="utf-8">
     <title>2026-10 HDC</title>
 
-    <!-- Inter web font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-
     <!-- Core CSS -->
     <link rel="stylesheet" href="../reveal.js/dist/reveal.css">
-    <!-- Theme (choose another: black, white, league, night, serif, etc.) -->
     <link rel="stylesheet" href="../reveal.js/dist/theme/white.css" id="theme">
+    <!-- Shared talk theme (palette, type, footnotes, paper references) -->
+    <link rel="stylesheet" href="../theme/talk.css">
 
     <style>
-        /* ============================================================
-           Palette & type tokens
-           Heading hue = the dark slate-teal of last year's Beamer header;
-           accent = its brick rule. One accent, used sparingly.
-           Tweak everything from here.
-           ============================================================ */
-        :root {
-            --ink:        #272d31;   /* body text            */
-            --ink-strong: #1b2e35;   /* headings (slate-teal) */
-            --muted:      #69737a;   /* captions, footnotes, slide number */
-            --accent:     #9b4426;   /* rules, bullets, links, progress */
-            --accent-tint: rgba(155, 68, 38, .10);
-            --rule:       #e2e6e8;   /* hairlines            */
-            --hairline:   #d3d9dc;   /* footnote separator   */
-            --code-bg:    #f5f6f7;
-
-            --font-sans: "Inter", "Century Gothic", system-ui, -apple-system,
-                         "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular",
-                         "Cascadia Code", Menlo, Consolas, monospace;
-        }
-
-        /* Base */
-        .reveal {
-            font-family: var(--font-sans);
-            color: var(--ink);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            font-feature-settings: "kern" 1, "liga" 1;
-        }
-
-        /* Titles: normal case, refined weight, slate ink */
-        .reveal h1,
-        .reveal h2,
-        .reveal h3 {
-            text-transform: none;
-            font-weight: 600;
-            letter-spacing: -.005em;
-            color: var(--ink-strong);
-        }
-
-        .reveal h1 {
-            font-size: 1.4em;
-            margin-bottom: 0.5em;
-            line-height: 1.15;
-            letter-spacing: -.015em;
-        }
-
-        .reveal h2 {
-            font-size: 1.1em;
-            margin-bottom: 0.4em;
-        }
-
-        .reveal h3 {
-            font-size: 1.0em;
-            margin-bottom: 0.3em;
-            font-weight: 500;
-        }
-
-        /* Slim centred accent rule under section titles.
-           Absolutely positioned in the existing bottom margin → zero reflow,
-           so no slide can overflow because of it. */
-        .reveal h1,
-        .reveal h2 { position: relative; }
-
-        .reveal h1::after,
-        .reveal h2::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 3px;
-            border-radius: 3px;
-            background: var(--accent);
-        }
-
-        .reveal h1::after { bottom: -.16em; width: 2.8rem; }
-        .reveal h2::after { bottom: -.14em; width: 2.1rem; opacity: .9; }
-
-        /* Body text */
-        .reveal p {
-            font-size: 0.8em;
-            line-height: 1.5;
-        }
-
-        /* Lists */
-        .reveal ul,
-        .reveal ol,
-        .reveal li {
-            font-size: 0.8em;
-            line-height: 1.5;
-        }
-
-        .reveal li { margin: 0.12em 0; }
-        .reveal ul li::marker { color: var(--accent); }
-        .reveal ol li::marker { color: var(--accent); font-weight: 600; }
-
-        .small-text-slide ul,
-        .small-text-slide li {
-            font-size: 0.6em !important;
-        }
-
-        /* Emphasis & links */
-        .reveal strong { color: var(--ink-strong); font-weight: 600; }
-
-        .reveal a {
-            color: var(--accent);
-            text-decoration: none;
-            border-bottom: 1px solid transparent;
-            transition: border-color .15s ease;
-        }
-        .reveal a:hover { border-bottom-color: currentColor; }
-
-        /* Display math only */
-        .reveal .katex-display {
-            font-size: 0.65em;
-        }
-
-        /* Footnotes */
-        .reveal .slide-footnote {
-            position: absolute;
-            bottom: 5px;
-            font-size: 0.45em;
-            color: var(--muted);
-            border-top: 1px solid var(--hairline);
-            padding: 6px 10px 0;
-            text-align: left;
-        }
-
-        /* On-slide paper reference: title prominent, authors/venue muted.
-           Written in main.md as "Paper: Title | Authors, *Journal*, year"
-           (see the script at the bottom). */
-        .reveal .paper {
-            width: fit-content;
-            font-size: 0.5em;
-            line-height: 1.35;
-            text-align: left;
-            border-left: 3px solid var(--accent);
-            padding: 2px 0 2px 12px;
-            margin: 12px auto 0;
-        }
-        .reveal .paper .title {
-            display: block;
-            font-weight: 600;
-            color: var(--ink-strong);
-        }
-        .reveal .paper .authors { color: var(--muted); }
-
-        /* Inline code (fenced blocks keep the monokai theme below) */
-        .reveal :not(pre) > code {
-            font-family: var(--font-mono);
-            font-size: 0.85em;
-            background: var(--code-bg);
-            color: var(--ink-strong);
-            padding: .1em .35em;
-            border: 1px solid var(--rule);
-            border-radius: 4px;
-        }
-
-        .reveal pre {
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
-        }
-
-        /* Tables — clean, ruled, academic (only if you add any) */
-        .reveal table {
-            border-collapse: collapse;
-            font-size: 0.72em;
-            margin: 0.5em auto;
-        }
-        .reveal table th,
-        .reveal table td {
-            padding: .4em .75em;
-            border: none;
-            border-bottom: 1px solid var(--rule);
-            text-align: left;
-        }
-        .reveal table th {
-            color: var(--ink-strong);
-            font-weight: 600;
-            border-bottom: 2px solid var(--accent);
-        }
-        .reveal table tr:last-child td { border-bottom: 1px solid var(--ink-strong); }
-
-        /* Blockquote */
-        .reveal blockquote {
-            border: none;
-            border-left: 3px solid var(--accent);
-            background: var(--accent-tint);
-            box-shadow: none;
-            font-style: normal;
-            color: var(--ink);
-            padding: .5em 1em;
-        }
-
-        /* Chrome: progress bar, nav controls, slide number */
-        .reveal .progress { color: var(--accent); height: 3px; }
-        .reveal .controls { color: var(--accent); }
-        .reveal .slide-number {
-            background: transparent;
-            color: var(--muted);
-            font-size: 0.5em;
-            font-weight: 500;
-        }
-
-        ::selection { background: var(--accent-tint); }
-
         /* Full-window drifting checkerboard overlay (toggled per-slide in JS).
            z-index 9 keeps it below reveal's progress(10)/controls(11)/slide-number(31). */
         #ckr-overlay {
@@ -262,7 +49,6 @@
         }
     </style>
 
-
     <!-- Code highlight theme -->
     <link rel="stylesheet" href="../reveal.js/dist/plugin/highlight/monokai.css">
 </head>
@@ -286,81 +72,15 @@
     <script src="../reveal.js/dist/plugin/math.js"></script>
     <script src="../plugin/reveal-svg-layers.umd.js"></script>
 
+    <script src="../plugin/talk-helpers.js"></script>
+
     <script>
         Reveal.initialize({
             hash: true,                 // Update URL as you navigate
             slideNumber: true,          // Show slide numbers
             transition: 'none',        // none/fade/slide/convex/concave/zoom
-            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, SvgLayers],
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, SvgLayers, TalkHelpers],
         });
-
-        Reveal.on('ready', () => {
-            document.querySelectorAll('.reveal .slides section').forEach(slide => {
-                if (slide.querySelector('section')) return; // skip parent sections
-                slide.querySelectorAll('p').forEach(p => {
-                    if (p.textContent.trimStart().startsWith('Footnote:')) {
-                        const footnote = document.createElement('div');
-                        footnote.className = 'slide-footnote';
-                        footnote.innerHTML = p.innerHTML.replace(/^Footnote:\s*/, '');
-                        p.remove();
-                        slide.classList.add('has-footnote');
-                        slide.style.height = Reveal.getConfig().height + 'px';
-                        slide.appendChild(footnote);
-                    }
-                });
-            });
-        });
-
-        // Paper references: a line "Paper: Title | Authors, *Journal*, year"
-        // becomes a .paper block, whether it sits in markdown (parsed into a <p>)
-        // or inside an HTML block (left as raw text by the markdown parser).
-        (function () {
-            const PAPER = /^\s*Paper:\s*/;
-            const escape = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            const emphasis = s => s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-
-            function makePaper(html) {
-                const [title, authors = ''] = html.replace(PAPER, '').split('|');
-                const el = document.createElement('div');
-                el.className = 'paper';
-                el.innerHTML = `<span class="title">${title.trim()}</span><span class="authors">${authors.trim()}</span>`;
-                return el;
-            }
-
-            // Side by side in a flex row: share the row. Alone on a slide: cap the width.
-            function place(el) {
-                const parent = el.parentElement;
-                if (getComputedStyle(parent).display === 'flex') {
-                    el.style.flex = '1 1 0';
-                    el.style.margin = '0';
-                } else if (parent.tagName === 'SECTION') {
-                    el.style.maxWidth = '60%';
-                }
-            }
-
-            Reveal.on('ready', () => {
-                const root = document.querySelector('.reveal .slides');
-
-                root.querySelectorAll('p').forEach(p => {
-                    if (!PAPER.test(p.textContent)) return;
-                    const el = makePaper(p.innerHTML);
-                    p.replaceWith(el);
-                    place(el);
-                });
-
-                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-                const hits = [];
-                while (walker.nextNode()) {
-                    if (/^\s*Paper:/m.test(walker.currentNode.data)) hits.push(walker.currentNode);
-                }
-                hits.forEach(node => {
-                    const parts = node.data.split('\n').map(line =>
-                        PAPER.test(line) ? makePaper(emphasis(escape(line))) : document.createTextNode(line + '\n'));
-                    node.replaceWith(...parts);
-                    parts.forEach(n => n.nodeType === Node.ELEMENT_NODE && place(n));
-                });
-            });
-        })();
 
         // Full-window checkerboard: show a body-level overlay (outside reveal's
         // scaled .slides transform) whenever the active slide carries a

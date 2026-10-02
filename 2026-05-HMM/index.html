@@ -139,29 +139,14 @@
     <script src="../reveal.js/dist/plugin/math.js"></script>
     <script src="../plugin/reveal-svg-layers.umd.js"></script>
 
+    <script src="../plugin/talk-helpers.js"></script>
+
     <script>
         Reveal.initialize({
             hash: true,                 // Update URL as you navigate
             slideNumber: true,          // Show slide numbers
             transition: 'none',        // none/fade/slide/convex/concave/zoom
-            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, SvgLayers],
-        });
-
-        Reveal.on('ready', () => {
-            document.querySelectorAll('.reveal .slides section').forEach(slide => {
-                if (slide.querySelector('section')) return; // skip parent sections
-                slide.querySelectorAll('p').forEach(p => {
-                    if (p.textContent.trimStart().startsWith('Footnote:')) {
-                        const footnote = document.createElement('div');
-                        footnote.className = 'slide-footnote';
-                        footnote.innerHTML = p.innerHTML.replace(/^Footnote:\s*/, '');
-                        p.remove();
-                        slide.classList.add('has-footnote');
-                        slide.style.height = Reveal.getConfig().height + 'px';
-                        slide.appendChild(footnote);
-                    }
-                });
-            });
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, SvgLayers, TalkHelpers],
         });
 
         // Full-window checkerboard: show a body-level overlay (outside reveal's
