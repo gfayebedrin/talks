@@ -23,12 +23,12 @@ Note:
   <figure style="margin:0; width:400px;">
     <img src="figures/intro/jeffery2015_fig1c.png" style="height:300px; width:auto; display:block; margin:0 auto;" />
     <!-- <figcaption style="font-size:0.5em; margin-top:8px;">Place cells: hippocampus, rat</figcaption> -->
-    <div class="paper"><span class="title">The hippocampus as a spatial map. Preliminary evidence from unit activity in the freely-moving rat</span><span class="authors">O'Keefe &amp; Dostrovsky, <em>Brain Research</em>, 1971</span></div>
+    Paper: The hippocampus as a spatial map. Preliminary evidence from unit activity in the freely-moving rat | O'Keefe & Dostrovsky, *Brain Research*, 1971
   </figure>
   <figure style="margin:0; width:400px;">
     <img src="figures/intro/taube1990_fig3c.png" style="height:300px; width:auto; display:block; margin:0 auto;" />
     <!-- <figcaption style="font-size:0.5em; margin-top:8px;">Head direction cells: postsubiculum, rat</figcaption> -->
-    <div class="paper"><span class="title">Head-direction cells recorded from the postsubiculum in freely moving rats.</span><span class="authors">Taube, Muller &amp; Ranck, <em>J. Neurosci.</em>, 1990</span></div>
+    Paper: Head-direction cells recorded from the postsubiculum in freely moving rats. | Taube, Muller & Ranck, *J. Neurosci.*, 1990
   </figure>
 </div>
 
@@ -54,8 +54,8 @@ Note:
 </div>
 
 <div style="display:flex; justify-content:center; gap:40px;">
-  <div class="paper" style="width:42%; margin:0;"><span class="title">A model of the neural basis of the rat's sense of direction</span><span class="authors">Skaggs, Knierim, Kudrimoti &amp; McNaughton, <em>NeurIPS</em>, 1995</span></div>
-  <div class="paper" style="width:42%; margin:0;"><span class="title">Representation of spatial orientation by the intrinsic dynamics of the head-direction cell ensemble: a theory</span><span class="authors">Zhang, <em>J. Neurosci.</em>, 1996</span></div>
+  Paper: A model of the neural basis of the rat's sense of direction | Skaggs, Knierim, Kudrimoti & McNaughton, *NeurIPS*, 1995
+  Paper: Representation of spatial orientation by the intrinsic dynamics of the head-direction cell ensemble: a theory | Zhang, *J. Neurosci.*, 1996
 </div>
 
 Note:
@@ -67,9 +67,9 @@ Note:
 - HD cells were found in rats, bats and *Drosophila*
 ---
 
-<video data-autoplay loop muted data-src="figures/intro/seelig2015_video6.mp4" style="max-height:560px; width:auto; display:block; margin:10px auto;"></video>
+<video data-autoplay loop muted data-src="figures/intro/seelig2015_video6.mp4" style="max-height:440px; width:auto; display:block; margin:10px auto;"></video>
 
-Footnote: Seelig & Jayaraman, *Neural dynamics for landmark orientation and angular path integration*, Nature (2015), Supplementary Video 6
+Paper: Neural dynamics for landmark orientation and angular path integration | Seelig & Jayaraman, *Nature*, 2015
 
 Note:
 - Head-fixed *Drosophila* walking on a ball in darkness, 2-photon GCaMP6f imaging of E-PG neurons in the ellipsoid body
@@ -82,7 +82,7 @@ Note:
 <div style="display:flex; align-items:center; justify-content:center; gap:40px; margin-top:16px;">
   <img src="figures/zebrafish/petrucco2023_fig1gh.png" style="width:48%; height:auto;" />
   <div style="width:44%;">
-    <div class="paper" style="margin:0 0 12px;"><span class="title">Neural dynamics and architecture of the heading direction circuit in zebrafish</span><span class="authors">Petrucco et al., <em>Nature Neuroscience</em>, 2023</span></div>
+    Paper: Neural dynamics and architecture of the heading direction circuit in zebrafish | Petrucco et al., *Nature Neuroscience*, 2023
     <ul style="font-size:0.7em;">
       <li>Topographic heading code in the anterior hindbrain</li>
       <li>The bump rotates with directional swims</li>
@@ -151,7 +151,7 @@ Note:
     <li>Transparent, close to zebrafish</li>
     <li>Pan-neuronal GCaMP6s</li>
   </ul>
-  <div class="paper" style="width:40%; margin:0;"><span class="title">Transparent <em>Danionella translucida</em> as a genetically tractable vertebrate brain model</span><span class="authors">Schulze et al., <em>Nature Methods</em>, 2018</span></div>
+  Paper: Transparent *Danionella translucida* as a genetically tractable vertebrate brain model | Schulze et al., *Nature Methods*, 2018
 </div>
 
 Note:

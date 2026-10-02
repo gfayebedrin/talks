@@ -147,8 +147,11 @@
             text-align: left;
         }
 
-        /* On-slide paper reference: title prominent, authors/venue muted */
+        /* On-slide paper reference: title prominent, authors/venue muted.
+           Written in main.md as "Paper: Title | Authors, *Journal*, year"
+           (see the script at the bottom). */
         .reveal .paper {
+            width: fit-content;
             font-size: 0.5em;
             line-height: 1.35;
             text-align: left;
@@ -307,6 +310,57 @@
                 });
             });
         });
+
+        // Paper references: a line "Paper: Title | Authors, *Journal*, year"
+        // becomes a .paper block, whether it sits in markdown (parsed into a <p>)
+        // or inside an HTML block (left as raw text by the markdown parser).
+        (function () {
+            const PAPER = /^\s*Paper:\s*/;
+            const escape = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const emphasis = s => s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+            function makePaper(html) {
+                const [title, authors = ''] = html.replace(PAPER, '').split('|');
+                const el = document.createElement('div');
+                el.className = 'paper';
+                el.innerHTML = `<span class="title">${title.trim()}</span><span class="authors">${authors.trim()}</span>`;
+                return el;
+            }
+
+            // Side by side in a flex row: share the row. Alone on a slide: cap the width.
+            function place(el) {
+                const parent = el.parentElement;
+                if (getComputedStyle(parent).display === 'flex') {
+                    el.style.flex = '1 1 0';
+                    el.style.margin = '0';
+                } else if (parent.tagName === 'SECTION') {
+                    el.style.maxWidth = '60%';
+                }
+            }
+
+            Reveal.on('ready', () => {
+                const root = document.querySelector('.reveal .slides');
+
+                root.querySelectorAll('p').forEach(p => {
+                    if (!PAPER.test(p.textContent)) return;
+                    const el = makePaper(p.innerHTML);
+                    p.replaceWith(el);
+                    place(el);
+                });
+
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                const hits = [];
+                while (walker.nextNode()) {
+                    if (/^\s*Paper:/m.test(walker.currentNode.data)) hits.push(walker.currentNode);
+                }
+                hits.forEach(node => {
+                    const parts = node.data.split('\n').map(line =>
+                        PAPER.test(line) ? makePaper(emphasis(escape(line))) : document.createTextNode(line + '\n'));
+                    node.replaceWith(...parts);
+                    parts.forEach(n => n.nodeType === Node.ELEMENT_NODE && place(n));
+                });
+            });
+        })();
 
         // Full-window checkerboard: show a body-level overlay (outside reveal's
         // scaled .slides transform) whenever the active slide carries a
