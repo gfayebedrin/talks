@@ -91,8 +91,6 @@ Note:
   </div>
 </div>
 
-Footnote: Petrucco et al. (2023), Fig. 1g–h, CC BY 4.0
-
 Note:
 - Figure top: r1π neurons (GABAergic, anterior hindbrain) projected on the first two rotated PCs form a ring; colour = angle on the ring. Same colours on the anatomy: a topographic map across both hemispheres
 - Figure bottom: activity of ~100 neurons sorted by ring angle over 1000 s; the bright bump moves across the population, and the network phase (green) follows it
@@ -277,12 +275,12 @@ Note:
 
 <img src="figures/seminar/dark_error.png" style="width:56%; height:auto; display:block; margin:20px auto;" />
 
-- Error far below shuffle in every fish (N = 6)
-- Also found with simpler protocols (N = 15)
 
 Note:
 - y axis: mean absolute circular error on the test part. Blue: real data; orange: shuffle (mean ± s.d.)
 - Chance level is ~90°; real data is ~20–40°
+- Error far below shuffle in every fish (N = 6)
+- Also found with simpler protocols (N = 15)
 
 ---
 
