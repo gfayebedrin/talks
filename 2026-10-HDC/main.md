@@ -232,20 +232,20 @@ Note:
   </div>
   <div style="width:50%; font-size:0.8em; text-align:left;">
     <p>2. Preferred directions</p>
-    $$\theta_{\mathrm{pref},n} = \arg \left(\sum_t r_n(t) e^{j\theta_t}\right)$$
-    <p style="color:blue; font-size:0.6em;">why not $\arg \left( \sum_\theta \bar{r}_n(\theta) e^{j\theta}  \right)$ ?</p>
+    $$\theta_{\mathrm{pref},n} = \arg \left(\sum_t r_n(t) e^{i\theta_t}\right)$$
+    <p style="color:blue; font-size:0.6em;">why not $\arg \left( \sum_\theta \bar{r}_n(\theta) e^{i\theta}  \right)$ ?</p>
   </div>
 </div>
 
 Note:
-- $r_n(t)$: firing rate (ΔF/F) of neuron $n$; $\theta_t$: imposed heading at time $t$
+- $r_n(t)$: activity (ΔF/F) of neuron $n$; $\theta_t$: imposed heading at time $t$
 - The preferred direction is the circular mean of the heading, weighted by activity
 
 ---
 
 <div style="font-size:0.62em;">
   <p>3. Population vector</p>
-  $$\vec v(t) = \sum_n r_n(t)\, e^{\,i\,\theta_{\mathrm{pref},n}}$$
+  $$\vec v(t) = \sum_n r_n(t)\, e^{i\theta_{\mathrm{pref},n}}$$
 </div>
 
 <img src="figures/seminar/decoding.png" style="width:86%; height:auto; display:block; margin:10px auto;" />
