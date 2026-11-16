@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>2026-11 Underfitted HMMs</title>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../reveal.js/dist/theme/white.css" id="theme">
+    <!-- Shared talk theme (palette, type, footnotes, paper references) -->
+    <link rel="stylesheet" href="../theme/talk.css">
+
+    <style>
+        /* Boxed one-line results */
+        .reveal .result {
+            border-left: 4px solid var(--accent);
+            background: var(--accent-tint);
+            padding: 10px 18px;
+            margin: 18px auto;
+            width: 86%;
+            text-align: left;
+            font-size: 0.75em;
+        }
+
+        .reveal table { font-size: 0.55em; }
+        .reveal .small { font-size: 0.6em; color: var(--muted); }
+    </style>
+
+    <!-- Code highlight theme -->
+    <link rel="stylesheet" href="../reveal.js/dist/plugin/highlight/monokai.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown="main.md" data-separator="^---" data-separator-vertical="^--"
+                data-separator-notes="^Note:" data-charset="utf-8">
+            </section>
+        </div>
+    </div>
+
+    <!-- Reveal.js core -->
+    <script src="../reveal.js/dist/reveal.js"></script>
+    <!-- Plugins -->
+    <script src="../reveal.js/dist/plugin/markdown.js"></script>
+    <script src="../reveal.js/dist/plugin/highlight.js"></script>
+    <script src="../reveal.js/dist/plugin/notes.js"></script>
+    <script src="../reveal.js/dist/plugin/math.js"></script>
+    <script src="../plugin/reveal-svg-layers.umd.js"></script>
+    <script src="../plugin/talk-helpers.js"></script>
+
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'none',
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, SvgLayers, TalkHelpers],
+        });
+    </script>
+</body>
+
+</html>
