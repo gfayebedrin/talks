@@ -200,10 +200,10 @@ def limits_map():
     t(L - 14, B - 12, "weak", 15, "end", MUTED)
     t(L - 14, T + 20, "strong", 15, "end", MUTED)
 
-    box(140, 40, 700, 105, BRICK, "3 · High dimension  d → ∞", "filter one-hot · geometry decides, dynamics = I(ŝ₋₁; ŝ₀)")
-    box(140, 175, 330, 120, TEAL, "1 · Fast  T = 1πᵀ + εR", "mixture fit + soft lumping")
-    box(510, 175, 330, 120, TEAL, "2 · Slow  T = I + εQ", "hard clustering of regimes")
-    box(140, 325, 700, 105, "#6f4aa0", "4 · Proportional  N = αd, Δμ ~ 1/√d", "geometry ~ dynamics ~ noise · thresholds")
+    box(140, 40, 700, 105, BRICK, "3 · High dimension", "each frame classified alone, jumps counted")
+    box(140, 175, 330, 120, TEAL, "1 · Fast switching", "a mixture plus a little memory")
+    box(510, 175, 330, 120, TEAL, "2 · Slow switching", "whole stays sorted by look")
+    box(140, 325, 700, 105, "#6f4aa0", "4 · Weak frames", "timing can change the merge")
     # where the HMM-RBM fits sit
     o.append(f'<circle cx="764" cy="70" r="9" fill="{BRICK}" stroke="#fff" stroke-width="2"/>')
     t(778, 76, "our fits", 16, "start", BRICK, 600)
@@ -260,3 +260,139 @@ with open(os.path.join(HERE, "toy_model.svg"), "w") as f:
     f.write(toy())
 
 print("figures written to", HERE)
+
+
+# ---------------------------------------------------------------------------
+# 8. Toy model, the two candidate merges side by side
+def two_merges():
+    W, H = 1000, 400
+    o = []
+
+    def t(x, y, s, size=22, anchor="middle", color=INK, weight=400):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
+                 f'font-weight="{weight}" {FONT}>{s}</text>')
+
+    def panel(x0, groups, title, line1, line2):
+        # groups: list of (list of means, color, label)
+        sc, base = 50, 250
+        o.append(f'<line x1="{x0}" y1="{base}" x2="{x0 + 450}" y2="{base}" stroke="{MUTED}" stroke-width="1.5"/>')
+        for mus, color, label in groups:
+            pts = []
+            for i in range(301):
+                x = -1.5 + 11.6 * i / 300
+                y = sum(math.exp(-0.5 * (x - m) ** 2) for m in mus) / len(mus) ** 0.5
+                pts.append(f"{x0 + 30 + x * sc * 0.75:.1f},{base - y * 120:.1f}")
+            pts = [f"{x0 + 30 - 1.5 * sc * 0.75:.1f},{base}"] + pts + [f"{x0 + 30 + 10.1 * sc * 0.75:.1f},{base}"]
+            o.append(f'<polygon points="{" ".join(pts)}" fill="{color}" fill-opacity="0.15" stroke="{color}" stroke-width="2.5"/>')
+            for m, letter in zip(mus, label):
+                hy = sum(math.exp(-0.5 * (m - mm) ** 2) for mm in mus) / len(mus) ** 0.5
+                t(x0 + 30 + m * sc * 0.75, base - hy * 120 - 14, letter, 26, color=color, weight=700)
+        t(x0 + 225, 40, title, 26, weight=600)
+        t(x0 + 225, base + 50, line1, 20)
+        t(x0 + 225, base + 82, line2, 20)
+
+    panel(30, [([1.0, 2.4], BRICK, "ab"), ([7.2], TEAL, "c")],
+          "Merge a and b", "emissions: almost right", "timing: fast and slow mixed")
+    panel(530, [([1.0, 7.2], TEAL, "ac"), ([2.4], BRICK, "b")],
+          "Merge a and c", "emissions: two far bumps", "timing: clean, a ↔ c is hidden")
+    o.append(f'<line x1="500" y1="20" x2="500" y2="380" stroke="{GRID}" stroke-width="2"/>')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="The two candidate merges of the toy model"><title>Two merges</title>' + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "two_merges.svg"), "w") as f:
+    f.write(two_merges())
+
+
+# ---------------------------------------------------------------------------
+# 9. Deterministic annealing: centres split one at a time as T decreases
+def annealing_tree():
+    W, H = 760, 460
+    o = []
+
+    def t(x, y, s, size=20, anchor="middle", color=INK, weight=400):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
+                 f'font-weight="{weight}" {FONT}>{s}</text>')
+
+    def seg(x1, y1, x2, y2, color=TEAL, w=4):
+        o.append(f'<path d="M{x1},{y1} C{x1},{(y1 + y2) / 2} {x2},{(y1 + y2) / 2} {x2},{y2}" fill="none" '
+                 f'stroke="{color}" stroke-width="{w}" stroke-linecap="round"/>')
+
+    y0, y1, y2, y3 = 60, 170, 290, 410
+    # axis
+    o.append(f'<defs><marker id="ta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">'
+             f'<path d="M0,0 L10,5 L0,10 z" fill="{MUTED}"/></marker></defs>')
+    o.append(f'<line x1="70" y1="{y0}" x2="70" y2="{y3 + 10}" stroke="{MUTED}" stroke-width="1.5" marker-end="url(#ta)"/>')
+    o.append(f'<text x="34" y="{(y0 + y3) / 2}" font-size="20" text-anchor="middle" fill="{INK}" {FONT} '
+             f'transform="rotate(-90 34 {(y0 + y3) / 2})">temperature decreases</text>')
+    # tree: one centre, splits into {a,b} and c, then {a,b} splits
+    xc, xab, xa, xb, xcc = 400, 300, 220, 380, 600
+    o.append(f'<line x1="{xc}" y1="{y0}" x2="{xc}" y2="{y1}" stroke="{TEAL}" stroke-width="4"/>')
+    seg(xc, y1, xab, y2)
+    seg(xc, y1, xcc, y2)
+    o.append(f'<line x1="{xcc}" y1="{y2}" x2="{xcc}" y2="{y3}" stroke="{TEAL}" stroke-width="4"/>')
+    seg(xab, y2 + 30, xa, y3)
+    seg(xab, y2 + 30, xb, y3)
+    o.append(f'<line x1="{xab}" y1="{y2}" x2="{xab}" y2="{y2 + 30}" stroke="{TEAL}" stroke-width="4"/>')
+    t(xc + 14, y0 + 8, "one centre at the mean", 18, "start", MUTED)
+    t(xa, y3 + 34, "a", 26, weight=600)
+    t(xb, y3 + 34, "b", 26, weight=600)
+    t(xcc, y3 + 34, "c", 26, weight=600)
+    # K = 2 cut
+    yk = (y2 + y2 + 30) / 2 - 2
+    o.append(f'<line x1="120" y1="{yk}" x2="720" y2="{yk}" stroke="{BRICK}" stroke-width="2" stroke-dasharray="8 6"/>')
+    t(124, yk - 12, "fit with K = 2 stops here", 19, "start", BRICK, 600)
+    t(xc + 14, y1 - 8, "first split", 18, "start", MUTED)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H + 20}" width="{W}" height="{H + 20}" role="img" '
+            f'aria-label="Annealing tree"><title>Annealing tree</title>' + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "annealing_tree.svg"), "w") as f:
+    f.write(annealing_tree())
+
+
+# ---------------------------------------------------------------------------
+# 10. Merging two states breaks the Markov property: a sequence, before and after
+def merge_sequence():
+    seq = "acacacbbbbbbbbbacacbbbbbbbacac"
+    col = {"a": TEAL, "b": BRICK, "c": "#6f4aa0"}
+    W, H = 1000, 300
+    o = []
+
+    def t(x, y, s, size=20, anchor="middle", color=INK, weight=400):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
+                 f'font-weight="{weight}" {FONT}>{s}</text>')
+
+    x0, w = 140, 28
+    t(x0 - 16, 72, "true", 22, "end", weight=600)
+    t(x0 - 16, 192, "merged", 22, "end", weight=600)
+    for i, s in enumerate(seq):
+        o.append(f'<rect x="{x0 + i * w}" y="50" width="{w - 3}" height="34" rx="4" fill="{col[s]}" fill-opacity="0.85"/>')
+        t(x0 + i * w + (w - 3) / 2, 74, s, 18, color="#ffffff", weight=600)
+        m = "A" if s in "ab" else "C"
+        c = BRICK if m == "A" else "#6f4aa0"
+        o.append(f'<rect x="{x0 + i * w}" y="170" width="{w - 3}" height="34" rx="4" fill="{c}" fill-opacity="0.45"/>')
+        t(x0 + i * w + (w - 3) / 2, 194, m, 18, color=INK, weight=600)
+    # brackets for runs of A
+    runs, i = [], 0
+    while i < len(seq):
+        if seq[i] in "ab":
+            j = i
+            while j < len(seq) and seq[j] in "ab":
+                j += 1
+            runs.append((i, j))
+            i = j
+        else:
+            i += 1
+    for i, j in runs:
+        xa, xb = x0 + i * w, x0 + j * w - 3
+        o.append(f'<path d="M{xa},214 L{xa},222 L{xb},222 L{xb},214" fill="none" stroke="{INK}" stroke-width="1.5"/>')
+        t((xa + xb) / 2, 246, str(j - i), 18, color=INK)
+    stays = ", ".join(str(j - i) for i, j in runs)
+    t(x0, 286, f"steps in A before leaving: {stays}. Short stays from a, long stays from b.", 20, "start", MUTED)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="A merged state mixes short and long stays"><title>Merged sequence</title>' + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "merge_sequence.svg"), "w") as f:
+    f.write(merge_sequence())
