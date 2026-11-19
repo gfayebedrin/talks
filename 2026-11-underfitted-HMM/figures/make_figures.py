@@ -1,4 +1,5 @@
 """Figures for the 2026-11 underfitted-HMM talk, as plain SVG (no dependencies).
+Text labels written $...$ are LaTeX, rendered in the deck by plugin/reveal-svg-math.js (img with data-math).
 
 Numbers are copied from ~/Science/Guillaume/underfitted-hmm/results/ (Nov 2026).
 Run:  python3 make_figures.py   (writes the .svg files next to this script)
@@ -16,6 +17,7 @@ MUTED = "#69737a"
 GRID = "#e2e6e8"
 FONT = 'font-family="Inter, Century Gothic, sans-serif"'
 FS = 1.3  # global text scale, for projection
+
 
 
 class Plot:
@@ -217,47 +219,52 @@ with open(os.path.join(HERE, "limits_map.svg"), "w") as f:
 
 # ---------------------------------------------------------------------------
 # 7. Toy model: a, b close in emission; a <-> c fast; b slow
-def toy():
-    W, H = 900, 360
+def toy(arrows=True):
+    W, H = 900, 350
+    base, peak = 340, 150          # baseline y, bump height
+    sc, off = 68.85, 167.7          # x in data units -> pixels (x from -2 to 10.2 fits 30..870)
+    X = lambda x: off + x * sc
     o = []
 
     def gauss(mu, color, label):
-        pts = []
+        pts = [f"{X(mu - 3):.1f},{base}"]
         for i in range(201):
             x = mu - 3 + 6 * i / 200
-            y = math.exp(-0.5 * (x - mu) ** 2)
-            pts.append(f"{120 + x * 85:.1f},{300 - y * 150:.1f}")
-        o.append(f'<polyline points="{" ".join(pts)}" fill="{color}" fill-opacity="0.12" stroke="{color}" stroke-width="2.5"/>')
-        o.append(f'<text x="{120 + mu * 85:.1f}" y="140" font-size="28" font-weight="600" text-anchor="middle" '
+            pts.append(f"{X(x):.1f},{base - peak * math.exp(-0.5 * (x - mu) ** 2):.1f}")
+        pts.append(f"{X(mu + 3):.1f},{base}")
+        o.append(f'<polygon points="{" ".join(pts)}" fill="{color}" fill-opacity="0.12" stroke="{color}" stroke-width="2.5"/>')
+        o.append(f'<text x="{X(mu):.1f}" y="{base - peak - 12}" font-size="28" font-weight="600" text-anchor="middle" '
                  f'fill="{INK}" {FONT}>{label}</text>')
 
-    o.append(f'<line x1="40" y1="300" x2="880" y2="300" stroke="{MUTED}" stroke-width="1.5"/>')
+    o.append(f'<line x1="20" y1="{base}" x2="{W - 20}" y2="{base}" stroke="{MUTED}" stroke-width="1.5"/>')
     gauss(1.0, TEAL, "a")
     gauss(2.4, BRICK, "b")
-    gauss(7.2, TEAL, "c")
-    # delta bracket
-    o.append(f'<line x1="{120 + 85:.0f}" y1="325" x2="{120 + 2.4 * 85:.0f}" y2="325" stroke="{INK}" stroke-width="1.5"/>')
-    o.append(f'<text x="{120 + 1.7 * 85:.0f}" y="352" font-size="24" text-anchor="middle" fill="{INK}" {FONT}>δ</text>')
-    # fast a <-> c arc
-    xa, xc = 120 + 85, 120 + 7.2 * 85
-    o.append(f'<path d="M{xa},115 C{xa + 120},40 {xc - 120},40 {xc},115" fill="none" stroke="{TEAL}" stroke-width="3" '
-             f'marker-end="url(#h)" marker-start="url(#h2)"/>')
-    o.append(f'<text x="{(xa + xc) / 2}" y="30" font-size="22" text-anchor="middle" fill="{INK}" {FONT}>fast switching, rate κ</text>')
-    # b self loop
-    xb = 120 + 2.4 * 85
-    o.append(f'<path d="M{xb - 16},118 C{xb - 50},60 {xb + 50},60 {xb + 16},118" fill="none" stroke="{BRICK}" stroke-width="3" marker-end="url(#hb)"/>')
-    o.append(f'<text x="{xb - 46}" y="82" font-size="22" text-anchor="end" fill="{INK}" {FONT}>slow</text>')
+    gauss(7.2, "#6f4aa0", "c")
+    if arrows:
+        # fast a <-> c arc, high enough to clear b's loop
+        xa, xc, ye = X(1.0), X(7.2), base - peak - 40
+        o.append(f'<path d="M{xa:.1f},{ye} C{xa + 150:.1f},20 {xc - 150:.1f},20 {xc:.1f},{ye}" fill="none" stroke="{TEAL}" '
+                 f'stroke-width="3" marker-end="url(#h)" marker-start="url(#h2)"/>')
+        o.append(f'<text x="{(xa + xc) / 2:.1f}" y="38" font-size="22" text-anchor="middle" fill="{INK}" {FONT}>fast switching</text>')
+        # b self loop, under the arc
+        xb = X(2.4)
+        o.append(f'<path d="M{xb - 14:.1f},{ye} C{xb - 46:.1f},{ye - 55} {xb + 46:.1f},{ye - 55} {xb + 14:.1f},{ye}" fill="none" '
+                 f'stroke="{BRICK}" stroke-width="3" marker-end="url(#hb)"/>')
+        o.append(f'<text x="{xb + 34:.1f}" y="{ye - 14}" font-size="22" text-anchor="start" fill="{INK}" {FONT}>slow</text>')
     defs = (f'<defs>'
             f'<marker id="h" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{TEAL}"/></marker>'
             f'<marker id="h2" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{TEAL}"/></marker>'
             f'<marker id="hb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{BRICK}"/></marker>'
             f'</defs>')
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+    y0 = 0 if arrows else 140    # without arrows, drop the empty band on top
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 {y0} {W} {H - y0}" width="{W}" height="{H - y0}" role="img" '
             f'aria-label="Toy model: three true states, fit with two"><title>Toy model</title>' + defs + "".join(o) + "</svg>\n")
 
 
 with open(os.path.join(HERE, "toy_model.svg"), "w") as f:
     f.write(toy())
+with open(os.path.join(HERE, "toy_model_mixture.svg"), "w") as f:
+    f.write(toy(arrows=False))
 
 print("figures written to", HERE)
 
@@ -265,7 +272,7 @@ print("figures written to", HERE)
 # ---------------------------------------------------------------------------
 # 8. Toy model, the two candidate merges side by side
 def two_merges():
-    W, H = 1000, 400
+    W, H = 1000, 270
     o = []
 
     def t(x, y, s, size=22, anchor="middle", color=INK, weight=400):
@@ -288,14 +295,12 @@ def two_merges():
                 hy = sum(math.exp(-0.5 * (m - mm) ** 2) for mm in mus) / len(mus) ** 0.5
                 t(x0 + 30 + m * sc * 0.75, base - hy * 120 - 14, letter, 26, color=color, weight=700)
         t(x0 + 225, 40, title, 26, weight=600)
-        t(x0 + 225, base + 50, line1, 20)
-        t(x0 + 225, base + 82, line2, 20)
 
     panel(30, [([1.0, 2.4], BRICK, "ab"), ([7.2], TEAL, "c")],
           "Merge a and b", "emissions: almost right", "timing: fast and slow mixed")
     panel(530, [([1.0, 7.2], TEAL, "ac"), ([2.4], BRICK, "b")],
           "Merge a and c", "emissions: two far bumps", "timing: clean, a ↔ c is hidden")
-    o.append(f'<line x1="500" y1="20" x2="500" y2="380" stroke="{GRID}" stroke-width="2"/>')
+    o.append(f'<line x1="500" y1="20" x2="500" y2="260" stroke="{GRID}" stroke-width="2"/>')
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
             f'aria-label="The two candidate merges of the toy model"><title>Two merges</title>' + "".join(o) + "</svg>\n")
 
@@ -314,36 +319,58 @@ def annealing_tree():
         o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
                  f'font-weight="{weight}" {FONT}>{s}</text>')
 
-    def seg(x1, y1, x2, y2, color=TEAL, w=4):
-        o.append(f'<path d="M{x1},{y1} C{x1},{(y1 + y2) / 2} {x2},{(y1 + y2) / 2} {x2},{y2}" fill="none" '
-                 f'stroke="{color}" stroke-width="{w}" stroke-linecap="round"/>')
+    def branch(x_start, x_end, y_start, y_stop, color=TEAL, w=4, y_true=None):
+        """Centre position after a split: leaves like sqrt(Tc - T) (sideways).
+        Without y_true: reaches x_end at y_stop (quarter-ellipse in (T, x)).
+        With y_true: passes x_end (the true mean) at y_true, the true width, and keeps
+        drifting outward below it (k-means bias of overlapping clusters)."""
+        h = lambda u: math.sqrt(1 - (1 - u) ** 2)
+        scale = h((y_true - y_start) / (y_stop - y_start)) if y_true else 1.0
+        pts = []
+        for k in range(61):
+            u = k / 60
+            g = h(u) / scale
+            pts.append(f"{x_start + (x_end - x_start) * g:.1f},{y_start + (y_stop - y_start) * u:.1f}")
+        o.append(f'<polyline points="{" ".join(pts)}" fill="none" stroke="{color}" stroke-width="{w}" '
+                 f'stroke-linecap="round" stroke-linejoin="round"/>')
 
-    y0, y1, y2, y3 = 60, 170, 290, 410
+    def pos(x_start, x_end, y_start, y_stop, y):
+        u = (y - y_start) / (y_stop - y_start)
+        return x_start + (x_end - x_start) * math.sqrt(1 - (1 - u) ** 2)
+
+    y0, y1, y2, y3 = 60, 170, 300, 410   # top, first split, second split, true width T*
+    y4 = 470                              # bottom of the axis (T -> 0)
     # axis
     o.append(f'<defs><marker id="ta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">'
              f'<path d="M0,0 L10,5 L0,10 z" fill="{MUTED}"/></marker></defs>')
-    o.append(f'<line x1="70" y1="{y0}" x2="70" y2="{y3 + 10}" stroke="{MUTED}" stroke-width="1.5" marker-end="url(#ta)"/>')
-    o.append(f'<text x="34" y="{(y0 + y3) / 2}" font-size="20" text-anchor="middle" fill="{INK}" {FONT} '
-             f'transform="rotate(-90 34 {(y0 + y3) / 2})">temperature decreases</text>')
-    # tree: one centre, splits into {a,b} and c, then {a,b} splits
-    xc, xab, xa, xb, xcc = 400, 300, 220, 380, 600
+    o.append(f'<line x1="70" y1="{y0}" x2="70" y2="{y4}" stroke="{MUTED}" stroke-width="1.5" marker-end="url(#ta)"/>')
+    o.append(f'<text x="34" y="{(y0 + y4) / 2}" font-size="20" text-anchor="middle" fill="{INK}" {FONT} '
+             f'transform="rotate(-90 34 {(y0 + y4) / 2})">temperature T decreases</text>')
+    # one centre at the mean, splits into {a,b} and c, then {a,b} splits
+    xc, xab, xa, xb, xcc = 400, 300, 220, 380, 600   # mean = (2*300 + 600) / 3
     o.append(f'<line x1="{xc}" y1="{y0}" x2="{xc}" y2="{y1}" stroke="{TEAL}" stroke-width="4"/>')
-    seg(xc, y1, xab, y2)
-    seg(xc, y1, xcc, y2)
-    o.append(f'<line x1="{xcc}" y1="{y2}" x2="{xcc}" y2="{y3}" stroke="{TEAL}" stroke-width="4"/>')
-    seg(xab, y2 + 30, xa, y3)
-    seg(xab, y2 + 30, xb, y3)
-    o.append(f'<line x1="{xab}" y1="{y2}" x2="{xab}" y2="{y2 + 30}" stroke="{TEAL}" stroke-width="4"/>')
+    branch(xc, xcc, y1, y3)
+    # the a+b centre: drawn until it splits, then its two children
+    xs = pos(xc, xab, y1, y3, y2)
+    pts = [f"{pos(xc, xab, y1, y3, y1 + (y2 - y1) * k / 40):.1f},{y1 + (y2 - y1) * k / 40:.1f}" for k in range(41)]
+    o.append(f'<polyline points="{" ".join(pts)}" fill="none" stroke="{TEAL}" stroke-width="4" stroke-linecap="round"/>')
+    # a and b overlap: their centres cross the true means at T* and drift apart below it
+    branch(xs, xa, y2, y4, y_true=y3)
+    branch(xs, xb, y2, y4, y_true=y3)
+    # c is well separated: its centre stays on its mean below T*
+    o.append(f'<line x1="{xcc}" y1="{y3}" x2="{xcc}" y2="{y4}" stroke="{TEAL}" stroke-width="4"/>')
+    o.append(f'<line x1="120" y1="{y3}" x2="720" y2="{y3}" stroke="{MUTED}" stroke-width="1.5" stroke-dasharray="3 5"/>')
+    t(xcc + 14, y3 - 10, "$T^* = 2\\sigma^{*2}$", 30, "start", INK)  # LaTeX: plugin/reveal-svg-math.js
     t(xc + 14, y0 + 8, "one centre at the mean", 18, "start", MUTED)
-    t(xa, y3 + 34, "a", 26, weight=600)
-    t(xb, y3 + 34, "b", 26, weight=600)
-    t(xcc, y3 + 34, "c", 26, weight=600)
+    t(xa, y4 + 32, "a", 26, weight=600)
+    t(xb, y4 + 32, "b", 26, weight=600)
+    t(xcc, y4 + 32, "c", 26, weight=600)
     # K = 2 cut
-    yk = (y2 + y2 + 30) / 2 - 2
+    yk = y2 - 10
     o.append(f'<line x1="120" y1="{yk}" x2="720" y2="{yk}" stroke="{BRICK}" stroke-width="2" stroke-dasharray="8 6"/>')
     t(124, yk - 12, "fit with K = 2 stops here", 19, "start", BRICK, 600)
     t(xc + 14, y1 - 8, "first split", 18, "start", MUTED)
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H + 20}" width="{W}" height="{H + 20}" role="img" '
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H + 50}" width="{W}" height="{H + 50}" role="img" '
             f'aria-label="Annealing tree"><title>Annealing tree</title>' + "".join(o) + "</svg>\n")
 
 
@@ -396,3 +423,184 @@ def merge_sequence():
 
 with open(os.path.join(HERE, "merge_sequence.svg"), "w") as f:
     f.write(merge_sequence())
+
+
+# ---------------------------------------------------------------------------
+# 10. Reminder: what an HMM is (hidden chain, observations below)
+def hmm_reminder():
+    W, H = 900, 330
+    o = []
+
+    def t(x, y, s, size=22, anchor="middle", color=INK, weight=400, style=""):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
+                 f'font-weight="{weight}" {FONT} {style}>{s}</text>')
+
+    xs = [260 + 150 * i for i in range(5)]
+    yh, yo = 90, 250
+    t(40, yh + 8, "hidden state", 22, "start", MUTED)
+    t(40, yo + 8, "observation", 22, "start", MUTED)
+    for i, x in enumerate(xs):
+        if i < len(xs) - 1:
+            o.append(f'<line x1="{x + 36}" y1="{yh}" x2="{xs[i + 1] - 42}" y2="{yh}" stroke="{INK}" stroke-width="2.5" marker-end="url(#ar)"/>')
+            t((x + xs[i + 1]) / 2, yh - 16, "T", 22, color=INK, style='font-style="italic"')
+        o.append(f'<circle cx="{x}" cy="{yh}" r="34" fill="{TEAL}" fill-opacity="0.15" stroke="{TEAL}" stroke-width="2.5"/>')
+        t(x, yh + 9, f"s<tspan font-size='16' dy='6'>{i + 1}</tspan>", 26, color=INK, style='font-style="italic"')
+        o.append(f'<line x1="{x}" y1="{yh + 36}" x2="{x}" y2="{yo - 40}" stroke="{MUTED}" stroke-width="2.5" marker-end="url(#am)"/>')
+        o.append(f'<rect x="{x - 32}" y="{yo - 32}" width="64" height="64" rx="6" fill="{GRID}" stroke="{MUTED}" stroke-width="2"/>')
+        t(x, yo + 9, f"x<tspan font-size='16' dy='6'>{i + 1}</tspan>", 26, color=INK, style='font-style="italic"')
+    t(xs[-1] + 70, yh + 8, "…", 28, "start", MUTED)
+    t(xs[-1] + 70, yo + 8, "…", 28, "start", MUTED)
+    defs = (f'<defs>'
+            f'<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK}"/></marker>'
+            f'<marker id="am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{MUTED}"/></marker>'
+            f'</defs>')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="Hidden Markov model: a hidden chain of states, each emitting an observation"><title>HMM</title>'
+            + defs + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "hmm_reminder.svg"), "w") as f:
+    f.write(hmm_reminder())
+
+
+# ---------------------------------------------------------------------------
+# 11. Toy model, one true hidden sequence (same as the top row of merge_sequence)
+def toy_sequence():
+    seq = "acacacbbbbbbbbbacacbbbbbbbacac"
+    col = {"a": TEAL, "b": BRICK, "c": "#6f4aa0"}
+    x0, w = 30, 32
+    W, H = x0 * 2 + len(seq) * w, 100
+    o = []
+    for i, s in enumerate(seq):
+        o.append(f'<rect x="{x0 + i * w}" y="10" width="{w - 3}" height="38" rx="4" fill="{col[s]}" fill-opacity="0.85"/>')
+        o.append(f'<text x="{x0 + i * w + (w - 3) / 2:.1f}" y="36" font-size="20" text-anchor="middle" fill="#ffffff" '
+                 f'font-weight="600" {FONT}>{s}</text>')
+    y = 72
+    o.append(f'<line x1="{x0}" y1="{y}" x2="{W - x0}" y2="{y}" stroke="{MUTED}" stroke-width="2" marker-end="url(#ta)"/>')
+    o.append(f'<text x="{W - x0}" y="{y + 24}" font-size="20" text-anchor="end" fill="{MUTED}" {FONT}>time</text>')
+    defs = (f'<defs><marker id="ta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">'
+            f'<path d="M0,0 L10,5 L0,10 z" fill="{MUTED}"/></marker></defs>')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="A sample hidden sequence of the toy model"><title>Toy sequence</title>' + defs + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "toy_sequence.svg"), "w") as f:
+    f.write(toy_sequence())
+
+
+# ---------------------------------------------------------------------------
+# 12. Toy model, the hidden sequence after each candidate merge
+#     (colours match the groups of two_merges)
+def merged_sequences():
+    seq = "acacacbbbbbbbbbacacbbbbbbbacac"
+    col = {"a": TEAL, "b": BRICK, "c": "#6f4aa0"}
+    rows = [("true", lambda s: (s, col[s])),
+            ("a+b merged", lambda s: ("ab", BRICK) if s in "ab" else ("c", TEAL)),
+            ("a+c merged", lambda s: ("ac", TEAL) if s in "ac" else ("b", BRICK))]
+    x0, w, dy = 190, 32, 64
+    W, H = x0 + len(seq) * w + 20, 30 + dy * len(rows)
+    o = []
+    for r, (label, f) in enumerate(rows):
+        y = 12 + r * dy
+        o.append(f'<text x="{x0 - 18}" y="{y + 26}" font-size="22" text-anchor="end" fill="{INK}" '
+                 f'font-weight="600" {FONT}>{label}</text>')
+        for i, s in enumerate(seq):
+            g, c = f(s)
+            o.append(f'<rect x="{x0 + i * w}" y="{y}" width="{w - 3}" height="38" rx="4" fill="{c}" fill-opacity="0.8"/>')
+            o.append(f'<text x="{x0 + i * w + (w - 3) / 2:.1f}" y="{y + 25}" font-size="{15 if len(g) > 1 else 19}" '
+                     f'text-anchor="middle" fill="#ffffff" font-weight="600" {FONT}>{g}</text>')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="The toy hidden sequence after each merge"><title>Merged sequences</title>' + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "merged_sequences.svg"), "w") as f:
+    f.write(merged_sequences())
+
+
+
+# ---------------------------------------------------------------------------
+# 14. Dwivedi et al. 2018, case 1 (= our toy): truth 1/4 N(-th(1+r)) + 1/4 N(-th(1-r)) + 1/2 N(th),
+#     fit 1/2 N(-t) + 1/2 N(t), sigma = 1 known. theta_bar = 3.005 computed numerically (KL projection).
+def em_merge_fit():
+    th, rho, tbar = 3.0, 0.4, 3.005
+    W, H = 900, 330
+    base, sc_y = 290, 1150          # baseline y, px per unit density
+    X = lambda x: 450 + x * 58       # x from -7.5 to 7.5
+    npdf = lambda x, m: math.exp(-0.5 * (x - m) ** 2) / math.sqrt(2 * math.pi)
+    o = []
+
+    def curve(f, color, fill_op, dash=None, w=2.5):
+        pts = [f"{X(-7.5):.1f},{base}"] + [f"{X(-7.5 + 15 * i / 300):.1f},{base - sc_y * f(-7.5 + 15 * i / 300):.1f}"
+                                         for i in range(301)] + [f"{X(7.5):.1f},{base}"]
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        o.append(f'<polygon points="{" ".join(pts)}" fill="{color}" fill-opacity="{fill_op}" stroke="{color}" '
+                 f'stroke-width="{w}"{d}/>')
+
+    def t(x, y, s, size=26, anchor="middle", color=INK, weight=600):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
+                 f'font-weight="{weight}" {FONT}>{s}</text>')
+
+    o.append(f'<line x1="20" y1="{base}" x2="{W - 20}" y2="{base}" stroke="{MUTED}" stroke-width="1.5"/>')
+    ma, mb = -th * (1 + rho), -th * (1 - rho)
+    curve(lambda x: 0.25 * npdf(x, ma), TEAL, 0.15)
+    curve(lambda x: 0.25 * npdf(x, mb), BRICK, 0.15)
+    curve(lambda x: 0.5 * npdf(x, th), "#6f4aa0", 0.15)
+    # fitted two-component model, sigma fixed
+    curve(lambda x: 0.5 * npdf(x, -tbar), INK, 0.0, dash="9 6", w=3)
+    curve(lambda x: 0.5 * npdf(x, tbar), INK, 0.0, dash="9 6", w=3)
+    t(X(ma) - 40, base - sc_y * 0.25 * npdf(0, 0) + 4, "a")
+    t(X(mb) + 40, base - sc_y * 0.25 * npdf(0, 0) + 4, "b")
+    t(X(th) + 70, base - sc_y * 0.5 * npdf(0, 0) + 30, "c")
+    t(X(-tbar), base - sc_y * 0.5 * npdf(0, 0) - 14, "fit", 22, color=INK, weight=600)
+    t(X(tbar), base - sc_y * 0.5 * npdf(0, 0) - 14, "fit", 22, color=INK, weight=600)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="A two-component fit to three components: one fitted bump sits on the merged pair">'
+            f'<title>EM merge fit</title>' + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "em_merge_fit.svg"), "w") as f:
+    f.write(em_merge_fit())
+
+
+# ---------------------------------------------------------------------------
+# 15. Toy model fitted with two components (free means, widths, weights), population EM.
+#     Truth: a, b, c at 1.0, 2.4, 7.2, sigma = 1, weights 1/3. Fit (computed): merged a+b at 1.708,
+#     sd 1.23, weight 0.668; c at 7.209, sd 0.993, weight 0.332.
+def toy_fit():
+    W, H = 900, 380
+    base = 330
+    sc, off = 68.85, 167.7
+    X = lambda x: off + x * sc
+    k = 1128                        # px per unit density
+    npdf = lambda x, m, s: math.exp(-0.5 * ((x - m) / s) ** 2) / (s * math.sqrt(2 * math.pi))
+    o = []
+
+    def curve(f, color, fill_op, dash=None, w=2.5):
+        pts = [f"{X(-2):.1f},{base}"] + [f"{X(-2 + 12.2 * i / 400):.1f},{base - k * f(-2 + 12.2 * i / 400):.1f}"
+                                        for i in range(401)] + [f"{X(10.2):.1f},{base}"]
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        o.append(f'<polygon points="{" ".join(pts)}" fill="{color}" fill-opacity="{fill_op}" stroke="{color}" '
+                 f'stroke-width="{w}"{d}/>')
+
+    def t(x, y, s, size=28, color=INK, weight=600):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="middle" fill="{color}" '
+                 f'font-weight="{weight}" {FONT}>{s}</text>')
+
+    o.append(f'<line x1="20" y1="{base}" x2="{W - 20}" y2="{base}" stroke="{MUTED}" stroke-width="1.5"/>')
+    for mu, col in ((1.0, TEAL), (2.4, BRICK), (7.2, "#6f4aa0")):
+        curve(lambda x, mu=mu: npdf(x, mu, 1) / 3, col, 0.15)
+    curve(lambda x: 0.668 * npdf(x, 1.708, 1.23), INK, 0.0, dash="9 6", w=3)
+    curve(lambda x: 0.332 * npdf(x, 7.209, 0.993), INK, 0.0, dash="9 6", w=3)
+    ytrue = base - k * npdf(0, 0, 1) / 3
+    t(X(1.0), base + 34, "a")
+    t(X(2.4), base + 34, "b")
+    t(X(7.2), base + 34, "c")
+    t(X(1.708), base - k * 0.668 * npdf(0, 0, 1.23) - 14, "fit", 24)
+    t(X(7.209), ytrue - 14, "fit", 24)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="Toy model fitted with two components: one wide component covers a and b">'
+            f'<title>Toy fit</title>' + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "toy_fit.svg"), "w") as f:
+    f.write(toy_fit())
