@@ -102,9 +102,9 @@ p.line(S, gain_cnt, TEAL)
 p.dots(S, gain_cnt, TEAL)
 p.line(S, gain_bw, BRICK)
 p.dots(S, gain_bw, BRICK)
-p.text(p.X(128) + 12, p.Y(mi_valid[-1]) + 2, "I(ŝ₋₁ ; ŝ₀)", 16, color=INK)
-p.text(p.X(128) + 12, p.Y(gain_cnt[-1]) + 14, "counted T", 16, color=INK, weight=600)
-p.text(p.X(128) + 12, p.Y(gain_bw[-1]) + 5, "Baum–Welch T", 16, color=INK, weight=600)
+p.text(p.X(128) + 12, p.Y(mi_valid[-1]) + 2, "jump information", 16, color=INK)
+p.text(p.X(128) + 12, p.Y(gain_cnt[-1]) + 14, "counted 𝒯", 16, color=INK, weight=600)
+p.text(p.X(128) + 12, p.Y(gain_bw[-1]) + 5, "Baum–Welch 𝒯", 16, color=INK, weight=600)
 p.save("rbm_heldout_gain.svg", "Held-out gain from the dynamics against S, for the Baum-Welch and the counted transition matrix")
 
 # ---------------------------------------------------------------------------
@@ -112,7 +112,7 @@ p.save("rbm_heldout_gain.svg", "Held-out gain from the dynamics against S, for t
 gain_tr = [0.068, 0.531, 0.857, 1.149, 1.442, 1.761, 2.084]
 mi_tr = [0.094, 0.529, 0.852, 1.158, 1.464, 1.839, 2.214]
 p = Plot(470, 470, (0, 2.4), (0, 2.4), margin=(96, 24, 24, 76))
-p.axes([0, 0.8, 1.6, 2.4], [0, 0.8, 1.6, 2.4], "I(ŝ₋₁ ; ŝ₀)  (nats)",
+p.axes([0, 0.8, 1.6, 2.4], [0, 0.8, 1.6, 2.4], "information in decoded jumps (nats)",
        "HMM − mixture (nats/frame)", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
 p.line([0, 2.4], [0, 2.4], REF, 1.5, dash="6 5")
 p.dots(mi_tr, gain_tr, TEAL, r=6.5)
@@ -134,13 +134,13 @@ cc = [0.4 + 0.02 * i for i in range(86)]
 pred = [eps * (sumN * math.log(c) - (c - 1) * sumN) for c in cc]
 p = Plot(560, 420, (0.4, 2.1), (-1.6, 0.2), margin=(100, 175, 24, 76))
 p.axes([0.5, 1.0, 1.5, 2.0], [-1.6, -1.2, -0.8, -0.4, 0],
-       "scale c of the lumped generator", "ℓ(cQ) − ℓ(Q)  (10⁻³ nats)",
+       "transition rates × c", "change in ℓ  (10⁻³ nats)",
        xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
 p.line(cc, [1e3 * v for v in pred], TEAL)
 p.dots(cs, [1e3 * v for v in meas], BRICK, r=6.5)
-p.text(p.X(2.1) + 10, p.Y(1e3 * pred[-1]) + 5, "expansion", 16, weight=600)
+p.text(p.X(2.1) + 10, p.Y(1e3 * pred[-1]) + 5, "prediction", 16, weight=600)
 p.text(p.X(2.0) + 12, p.Y(-0.4), "Baum–Welch", 16, weight=600)
-p.text(p.X(2.0) + 12, p.Y(-0.4) + 20, "data (dots)", 15, color=MUTED)
+p.text(p.X(2.0) + 12, p.Y(-0.4) + 20, "fits (dots)", 15, color=MUTED)
 p.save("slow_Q_scan.svg", "Loss of likelihood when the lumped generator is scaled by c: measured against the slow expansion")
 
 # ---------------------------------------------------------------------------
@@ -150,12 +150,13 @@ lam = [i / 100 for i in range(0, 100)]
 ac = [(1 - l * l) / (1 + l * l) for l in lam]
 p = Plot(560, 420, (0, 1), (0, 1.18), margin=(100, 24, 24, 76))
 p.axes([0, 0.25, 0.5, 0.75, 1.0], [0, 0.25, 0.5, 0.75, 1.0],
-       "persistence λ of the split", "α_c θ²", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
+       "persistence λ of the split", "data needed to detect it", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
 p.line(lam, ac, TEAL)
 p.dots([0], [1], TEAL)
-p.text(p.X(0.03), p.Y(1.0) - 14, "i.i.d. labels: BBP", 15, color=MUTED)
-p.text(p.X(0.55), p.Y(0.82), "undetectable", 17, "middle", MUTED)
-p.text(p.X(0.25), p.Y(0.3), "detectable", 17, "middle", MUTED)
+p.text(p.X(0.03), p.Y(1.0) - 14, "no memory", 15, color=MUTED)
+# alpha = samples per dimension: above the threshold the split is detectable
+p.text(p.X(0.55), p.Y(0.82), "detectable", 17, "middle", MUTED)
+p.text(p.X(0.25), p.Y(0.3), "undetectable", 17, "middle", MUTED)
 p.save("prop_threshold.svg", "Detectability threshold against the persistence of the hidden labels")
 
 # ---------------------------------------------------------------------------
@@ -164,7 +165,7 @@ eta = [0, 0.5, 0.8, 0.95]
 ratio = [0.94, 0.87, 0.82, 0.79]
 p = Plot(470, 420, (0, 1), (0.7, 1.02), margin=(100, 24, 24, 76))
 p.axes([0, 0.25, 0.5, 0.75, 1.0], [0.7, 0.8, 0.9, 1.0],
-       "persistence η of T*", "α_IT / α_c", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
+       "persistence η of 𝒯*", "α_IT / α_c", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
 p.hline(1.0, REF)
 p.line(eta, ratio, BRICK)
 p.dots(eta, ratio, BRICK, r=6.5)
@@ -175,46 +176,47 @@ p.save("prop_hard_phase.svg", "Ratio of the information-theoretic threshold to t
 
 # ---------------------------------------------------------------------------
 # 6. Schematic: the four limits on a (switching speed, evidence per frame) map
-def limits_map():
-    W, H = 900, 520
+def limits_map(answers=False):
+    """The four limits as a plain 2x2 grid (no axes: they are separate regimes, not corners of a known diagram).
+    Top row: limits on the dynamics. Bottom row: limits on one frame. Labels are LaTeX (reveal-svg-math)."""
+    W, H = 900, 430
     o = []
 
     def t(x, y, s, size=18, anchor="middle", color=INK, weight=400):
         o.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
                  f'font-weight="{weight}" {FONT}>{s}</text>')
 
-    def box(x, y, w, h, color, title, sub):
-        o.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{color}" fill-opacity="0.10" '
-                 f'stroke="{color}" stroke-width="2"/>')
-        t(x + w / 2, y + h / 2 - 6, title, 24, color=INK, weight=600)
-        t(x + w / 2, y + h / 2 + 24, sub, 19, color=MUTED)
+    def box(x, y, w, h, color, label, sub, open_=False):
+        # open_: limit not worked out yet, drawn grey and dashed
+        if open_:
+            color = MUTED
+        dash = ' stroke-dasharray="8 6"' if open_ else ''
+        o.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" fill="{color}" '
+                 f'fill-opacity="{0.04 if open_ else 0.10}" stroke="{color}" stroke-width="2"{dash}/>')
+        if sub:
+            t(x + w / 2, y + h / 2 - 4, label, 36)
+            t(x + w / 2, y + h / 2 + 40, sub, 24, color=INK, weight=600)
+        else:
+            t(x + w / 2, y + h / 2 + 13, label, 40)
 
-    L, R, T, B = 110, 870, 30, 450
-    o.append(f'<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">'
-             f'<path d="M0,0 L10,5 L0,10 z" fill="{MUTED}"/></marker></defs>')
-    o.append(f'<line x1="{L}" y1="{B}" x2="{R}" y2="{B}" stroke="{MUTED}" stroke-width="1.5" marker-end="url(#ar)"/>')
-    o.append(f'<line x1="{L}" y1="{B}" x2="{L}" y2="{T}" stroke="{MUTED}" stroke-width="1.5" marker-end="url(#ar)"/>')
-    t((L + R) / 2, B + 40, "persistence of the hidden states", 18)
-    t(L + 40, B + 26, "fast", 15, color=MUTED)
-    t(R - 40, B + 26, "slow", 15, color=MUTED)
-    o.append(f'<text x="44" y="{(T + B) / 2}" font-size="18" text-anchor="middle" fill="{INK}" {FONT} '
-             f'transform="rotate(-90 44 {(T + B) / 2})">evidence per frame</text>')
-    t(L - 14, B - 12, "weak", 15, "end", MUTED)
-    t(L - 14, T + 20, "strong", 15, "end", MUTED)
-
-    box(140, 40, 700, 105, BRICK, "3 · High dimension", "each frame classified alone, jumps counted")
-    box(140, 175, 330, 120, TEAL, "1 · Fast switching", "a mixture plus a little memory")
-    box(510, 175, 330, 120, TEAL, "2 · Slow switching", "whole stays sorted by look")
-    box(140, 325, 700, 105, "#6f4aa0", "4 · Weak frames", "timing can change the merge")
+    sub = ["a+b merge", "?", "a+b merge", "?"] if answers else [None] * 4
+    bw, bh, gap, x0, y0 = 420, 190, 40, 10, 10
+    box(x0, y0, bw, bh, TEAL, r"$\mathcal{T} = \mathbf{1}\pi^\top + \varepsilon R$", sub[0])
+    box(x0 + bw + gap, y0, bw, bh, TEAL, r"$\mathcal{T} = I + \varepsilon Q$", sub[1], open_=True)
+    box(x0, y0 + bh + gap, bw, bh, BRICK, r"$d \to \infty$", sub[2])
+    box(x0 + bw + gap, y0 + bh + gap, bw, bh, "#6f4aa0", r"$d, L \to \infty, \ L/d = \alpha$", sub[3], open_=True)
     # where the HMM-RBM fits sit
-    o.append(f'<circle cx="764" cy="70" r="9" fill="{BRICK}" stroke="#fff" stroke-width="2"/>')
-    t(778, 76, "our fits", 16, "start", BRICK, 600)
+    cx, cy = x0 + bw - 190, y0 + bh + gap + 30
+    o.append(f'<circle cx="{cx}" cy="{cy}" r="9" fill="{BRICK}" stroke="#fff" stroke-width="2"/>')
+    t(cx + 16, cy + 6, "zebrafish HMMs", 18, "start", BRICK, 600)
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
-            f'aria-label="Map of the four limits"><title>Map of the four limits</title>' + "".join(o) + "</svg>\n")
+            f'aria-label="The four limits"><title>The four limits</title>' + "".join(o) + "</svg>\n")
 
 
 with open(os.path.join(HERE, "limits_map.svg"), "w") as f:
     f.write(limits_map())
+with open(os.path.join(HERE, "limits_recap.svg"), "w") as f:
+    f.write(limits_map(answers=True))
 
 
 # ---------------------------------------------------------------------------
@@ -271,7 +273,7 @@ print("figures written to", HERE)
 
 # ---------------------------------------------------------------------------
 # 8. Toy model, the two candidate merges side by side
-def two_merges():
+def two_merges(question=False):
     W, H = 1000, 270
     o = []
 
@@ -300,13 +302,18 @@ def two_merges():
           "Merge a and b", "emissions: almost right", "timing: fast and slow mixed")
     panel(530, [([1.0, 7.2], TEAL, "ac"), ([2.4], BRICK, "b")],
           "Merge a and c", "emissions: two far bumps", "timing: clean, a ↔ c is hidden")
-    o.append(f'<line x1="500" y1="20" x2="500" y2="260" stroke="{GRID}" stroke-width="2"/>')
+    if question:
+        t(500, 170, "?", 90, color=MUTED, weight=700)
+    else:
+        o.append(f'<line x1="500" y1="20" x2="500" y2="260" stroke="{GRID}" stroke-width="2"/>')
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
             f'aria-label="The two candidate merges of the toy model"><title>Two merges</title>' + "".join(o) + "</svg>\n")
 
 
 with open(os.path.join(HERE, "two_merges.svg"), "w") as f:
     f.write(two_merges())
+with open(os.path.join(HERE, "two_merges_question.svg"), "w") as f:
+    f.write(two_merges(question=True))
 
 
 # ---------------------------------------------------------------------------
@@ -381,42 +388,40 @@ with open(os.path.join(HERE, "annealing_tree.svg"), "w") as f:
 # ---------------------------------------------------------------------------
 # 10. Merging two states breaks the Markov property: a sequence, before and after
 def merge_sequence():
+    """True sequence and the a+b merged one, same style as merged_sequences(); stays in ab marked."""
     seq = "acacacbbbbbbbbbacacbbbbbbbacac"
     col = {"a": TEAL, "b": BRICK, "c": "#6f4aa0"}
-    W, H = 1000, 300
+    rows = [("true", lambda s: (s, col[s])),
+            ("a+b merged", lambda s: ("ab", BRICK) if s in "ab" else ("c", TEAL))]
+    x0, w, dy = 190, 32, 64
+    W, H = x0 + len(seq) * w + 20, 12 + dy * len(rows) + 60
     o = []
-
-    def t(x, y, s, size=20, anchor="middle", color=INK, weight=400):
-        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
-                 f'font-weight="{weight}" {FONT}>{s}</text>')
-
-    x0, w = 140, 28
-    t(x0 - 16, 72, "true", 22, "end", weight=600)
-    t(x0 - 16, 192, "merged", 22, "end", weight=600)
-    for i, s in enumerate(seq):
-        o.append(f'<rect x="{x0 + i * w}" y="50" width="{w - 3}" height="34" rx="4" fill="{col[s]}" fill-opacity="0.85"/>')
-        t(x0 + i * w + (w - 3) / 2, 74, s, 18, color="#ffffff", weight=600)
-        m = "A" if s in "ab" else "C"
-        c = BRICK if m == "A" else "#6f4aa0"
-        o.append(f'<rect x="{x0 + i * w}" y="170" width="{w - 3}" height="34" rx="4" fill="{c}" fill-opacity="0.45"/>')
-        t(x0 + i * w + (w - 3) / 2, 194, m, 18, color=INK, weight=600)
-    # brackets for runs of A
-    runs, i = [], 0
+    for r, (label, f) in enumerate(rows):
+        y = 12 + r * dy
+        o.append(f'<text x="{x0 - 18}" y="{y + 26}" font-size="22" text-anchor="end" fill="{INK}" '
+                 f'font-weight="600" {FONT}>{label}</text>')
+        for i, s in enumerate(seq):
+            g, c = f(s)
+            o.append(f'<rect x="{x0 + i * w}" y="{y}" width="{w - 3}" height="38" rx="4" fill="{c}" fill-opacity="0.8"/>')
+            o.append(f'<text x="{x0 + i * w + (w - 3) / 2:.1f}" y="{y + 25}" font-size="{15 if len(g) > 1 else 19}" '
+                     f'text-anchor="middle" fill="#ffffff" font-weight="600" {FONT}>{g}</text>')
+    # brackets under each stay in ab, with its length
+    yb = 12 + dy + 46
+    i = 0
     while i < len(seq):
         if seq[i] in "ab":
             j = i
             while j < len(seq) and seq[j] in "ab":
                 j += 1
-            runs.append((i, j))
+            xa, xb = x0 + i * w, x0 + j * w - 3
+            o.append(f'<path d="M{xa},{yb} L{xa},{yb + 8} L{xb},{yb + 8} L{xb},{yb}" fill="none" '
+                     f'stroke="{INK}" stroke-width="1.5"/>')
+            o.append(f'<text x="{(xa + xb) / 2:.1f}" y="{yb + 34}" font-size="20" text-anchor="middle" '
+                     f'fill="{INK}" font-weight="600" {FONT}>{j - i}</text>')
             i = j
         else:
             i += 1
-    for i, j in runs:
-        xa, xb = x0 + i * w, x0 + j * w - 3
-        o.append(f'<path d="M{xa},214 L{xa},222 L{xb},222 L{xb},214" fill="none" stroke="{INK}" stroke-width="1.5"/>')
-        t((xa + xb) / 2, 246, str(j - i), 18, color=INK)
-    stays = ", ".join(str(j - i) for i, j in runs)
-    t(x0, 286, f"steps in A before leaving: {stays}. Short stays from a, long stays from b.", 20, "start", MUTED)
+    o.append(f'<text x="{x0 - 18}" y="{yb + 34}" font-size="20" text-anchor="end" fill="{MUTED}" {FONT}>stay in ab</text>')
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
             f'aria-label="A merged state mixes short and long stays"><title>Merged sequence</title>' + "".join(o) + "</svg>\n")
 
@@ -442,12 +447,12 @@ def hmm_reminder():
     for i, x in enumerate(xs):
         if i < len(xs) - 1:
             o.append(f'<line x1="{x + 36}" y1="{yh}" x2="{xs[i + 1] - 42}" y2="{yh}" stroke="{INK}" stroke-width="2.5" marker-end="url(#ar)"/>')
-            t((x + xs[i + 1]) / 2, yh - 16, "T", 22, color=INK, style='font-style="italic"')
+            t((x + xs[i + 1]) / 2, yh - 16, r"$\mathcal{T}$", 22, color=INK)
         o.append(f'<circle cx="{x}" cy="{yh}" r="34" fill="{TEAL}" fill-opacity="0.15" stroke="{TEAL}" stroke-width="2.5"/>')
         t(x, yh + 9, f"s<tspan font-size='16' dy='6'>{i + 1}</tspan>", 26, color=INK, style='font-style="italic"')
         o.append(f'<line x1="{x}" y1="{yh + 36}" x2="{x}" y2="{yo - 40}" stroke="{MUTED}" stroke-width="2.5" marker-end="url(#am)"/>')
         o.append(f'<rect x="{x - 32}" y="{yo - 32}" width="64" height="64" rx="6" fill="{GRID}" stroke="{MUTED}" stroke-width="2"/>')
-        t(x, yo + 9, f"x<tspan font-size='16' dy='6'>{i + 1}</tspan>", 26, color=INK, style='font-style="italic"')
+        t(x, yo + 9, f"y<tspan font-size='16' dy='6'>{i + 1}</tspan>", 26, color=INK, style='font-style="italic"')
     t(xs[-1] + 70, yh + 8, "…", 28, "start", MUTED)
     t(xs[-1] + 70, yo + 8, "…", 28, "start", MUTED)
     defs = (f'<defs>'
@@ -604,3 +609,60 @@ def toy_fit():
 
 with open(os.path.join(HERE, "toy_fit.svg"), "w") as f:
     f.write(toy_fit())
+
+
+# ---------------------------------------------------------------------------
+# 15. Toy transition matrix and its lumped version over the merge a+b | c.
+#     Truth (rows from, a b c): a [.1 .1 .8], b [.05 .9 .05], c [.8 .1 .1]; stationary (.25, .5, .25).
+#     Lumped: ab -> [.70 .30], c -> [.90 .10]. Baum-Welch on 200k steps gave [.701 .299], [.905 .095].
+def lumped_chain():
+    A = [[0.10, 0.10, 0.80], [0.05, 0.90, 0.05], [0.80, 0.10, 0.10]]
+    pi = [0.25, 0.50, 0.25]
+    groups = [[0, 1], [2]]
+    L = [[sum(pi[i] * A[i][j] for i in g for j in h) / sum(pi[i] for i in g) for h in groups] for g in groups]
+    PURPLE = "#6f4aa0"
+    col3 = [TEAL, BRICK, PURPLE]
+    lab3 = ["a", "b", "c"]
+    col2 = [BRICK, TEAL]          # as in merged_sequences: ab brick, c teal
+    lab2 = ["ab", "c"]
+    W, H = 900, 380
+    o = []
+
+    def t(x, y, s, size=26, color=INK, weight=600, anchor="middle"):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" text-anchor="{anchor}" fill="{color}" '
+                 f'font-weight="{weight}" {FONT}>{s}</text>')
+
+    def matrix(x0, y0, cell, M, labels, colors, blocks=None):
+        n = len(M)
+        for i in range(n):
+            for j in range(n):
+                o.append(f'<rect x="{x0 + j * cell}" y="{y0 + i * cell}" width="{cell}" height="{cell}" '
+                         f'fill="none" stroke="{GRID}" stroke-width="2"/>')
+                t(x0 + j * cell + cell / 2, y0 + i * cell + cell / 2 + 9, f"{M[i][j]:.2f}".lstrip("0"), 26, INK, 400)
+            t(x0 - 18, y0 + i * cell + cell / 2 + 9, labels[i], 26, colors[i], 700, "end")
+            t(x0 + i * cell + cell / 2, y0 - 14, labels[i], 26, colors[i], 700)
+        if blocks:  # lines separating the merged group from the rest
+            k = blocks
+            o.append(f'<line x1="{x0 + k * cell}" y1="{y0}" x2="{x0 + k * cell}" y2="{y0 + n * cell}" stroke="{INK}" stroke-width="3"/>')
+            o.append(f'<line x1="{x0}" y1="{y0 + k * cell}" x2="{x0 + n * cell}" y2="{y0 + k * cell}" stroke="{INK}" stroke-width="3"/>')
+
+    cell = 82
+    x3, y3 = 90, 60
+    matrix(x3, y3, cell, A, lab3, col3, blocks=2)
+    t(x3 + 1.5 * cell, y3 + 3 * cell + 46, "true", 24, MUTED, 600)
+    # arrow
+    ax0, ax1, ay = x3 + 3 * cell + 40, x3 + 3 * cell + 150, y3 + 1.5 * cell
+    o.append(f'<defs><marker id="la" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">'
+             f'<path d="M0,0 L10,5 L0,10 z" fill="{MUTED}"/></marker></defs>')
+    o.append(f'<line x1="{ax0}" y1="{ay}" x2="{ax1}" y2="{ay}" stroke="{MUTED}" stroke-width="2.5" marker-end="url(#la)"/>')
+    t((ax0 + ax1) / 2, ay - 14, "merge a+b", 20, MUTED, 400)
+    cell2 = 100
+    x2, y2 = ax1 + 90, y3 + 1.5 * cell - cell2
+    matrix(x2, y2, cell2, L, lab2, col2)
+    t(x2 + cell2, y2 + 2 * cell2 + 46, "fitted", 24, MUTED, 600)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
+            f'aria-label="Toy transition matrix and its lumped version"><title>Lumped chain</title>' + "".join(o) + "</svg>\n")
+
+
+with open(os.path.join(HERE, "lumped_chain.svg"), "w") as f:
+    f.write(lumped_chain())

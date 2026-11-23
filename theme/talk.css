@@ -86,18 +86,25 @@
 .reveal h1::after { bottom: -.16em; width: 2.8rem; }
 .reveal h2::after { bottom: -.14em; width: 2.1rem; opacity: .9; }
 
-/* Body text */
-.reveal p {
-    font-size: 0.8em;
+/* Body text: one size for paragraphs and lists.
+   Set once on the outer block; everything nested inherits it (1em), so
+   list items, paragraphs inside list items and nested lists do not shrink again.
+   (Before Nov 2026, ul and li were both 0.8em, so bullets came out at 0.64
+   and plain paragraphs at 0.8; 0.64 keeps the bullet size the decks were laid out with.) */
+:root { --body-size: 0.64em; }
+
+.reveal p,
+.reveal ul,
+.reveal ol {
+    font-size: var(--body-size);
     line-height: 1.5;
 }
 
-/* Lists */
-.reveal ul,
-.reveal ol,
-.reveal li {
-    font-size: 0.8em;
-    line-height: 1.5;
+.reveal li,
+.reveal li p,
+.reveal li ul,
+.reveal li ol {
+    font-size: 1em;
 }
 
 .reveal li { margin: 0.12em 0; }
@@ -105,8 +112,8 @@
 .reveal ol li::marker { color: var(--accent); font-weight: 600; }
 
 .small-text-slide ul,
-.small-text-slide li {
-    font-size: 0.6em !important;
+.small-text-slide ol {
+    font-size: 0.5em !important;
 }
 
 /* Emphasis & links */
