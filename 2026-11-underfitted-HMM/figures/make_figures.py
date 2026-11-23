@@ -93,16 +93,16 @@ d_cnt = [0.0349, 0.0189, 0.0784, 0.1173, 0.4140, 0.9904, 1.7977]
 gain_cnt = [g + d for g, d in zip(gain_bw, d_cnt)]
 mi_valid = [0.085, 0.492, 0.788, 1.095, 1.355, 1.719, 2.037]
 
-p = Plot(760, 470, (2, 128), (-0.4, 2.2), xlog=True, margin=(96, 200, 24, 76))
+p = Plot(820, 470, (2, 128), (-0.4, 2.2), xlog=True, margin=(96, 260, 24, 76))
 p.axes(S, [-0.4, 0, 0.4, 0.8, 1.2, 1.6, 2.0], "number of states S",
-       "held-out gain (nats/frame)", yfmt=lambda v: f"{v:g}")
+       r"$\ell_{\text{HMM}} - \ell_{\text{mix}}\ \text{(nats/frame)}$", yfmt=lambda v: f"{v:g}")
 p.hline(0)
 p.line(S, mi_valid, REF, 2, dash="6 5")
 p.line(S, gain_cnt, TEAL)
 p.dots(S, gain_cnt, TEAL)
 p.line(S, gain_bw, BRICK)
 p.dots(S, gain_bw, BRICK)
-p.text(p.X(128) + 12, p.Y(mi_valid[-1]) + 2, "jump information", 16, color=INK)
+p.text(p.X(128) + 12, p.Y(mi_valid[-1]) + 2, r"$I(\hat s_{t-1};\, \hat s_t)$", 16, color=INK)
 p.text(p.X(128) + 12, p.Y(gain_cnt[-1]) + 14, "counted 𝒯", 16, color=INK, weight=600)
 p.text(p.X(128) + 12, p.Y(gain_bw[-1]) + 5, "Baum–Welch 𝒯", 16, color=INK, weight=600)
 p.save("rbm_heldout_gain.svg", "Held-out gain from the dynamics against S, for the Baum-Welch and the counted transition matrix")
@@ -112,8 +112,8 @@ p.save("rbm_heldout_gain.svg", "Held-out gain from the dynamics against S, for t
 gain_tr = [0.068, 0.531, 0.857, 1.149, 1.442, 1.761, 2.084]
 mi_tr = [0.094, 0.529, 0.852, 1.158, 1.464, 1.839, 2.214]
 p = Plot(470, 470, (0, 2.4), (0, 2.4), margin=(96, 24, 24, 76))
-p.axes([0, 0.8, 1.6, 2.4], [0, 0.8, 1.6, 2.4], "information in decoded jumps (nats)",
-       "HMM − mixture (nats/frame)", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
+p.axes([0, 0.8, 1.6, 2.4], [0, 0.8, 1.6, 2.4], r"$I(\hat s_{t-1};\, \hat s_t)\ \text{(nats)}$",
+       r"$\ell_{\text{HMM}} - \ell_{\text{mix}}\ \text{(nats/frame)}$", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
 p.line([0, 2.4], [0, 2.4], REF, 1.5, dash="6 5")
 p.dots(mi_tr, gain_tr, TEAL, r=6.5)
 p.text(p.X(2.25), p.Y(2.38), "y = x", 15, "end", MUTED)
@@ -123,6 +123,95 @@ for s, x, y in zip(S, mi_tr, gain_tr):
     if s == 128:
         p.text(p.X(x) - 12, p.Y(y) + 5, f"S={s}", 14, "end", MUTED)
 p.save("rbm_gain_vs_mi.svg", "Training gain of the HMM over the mixture against the mutual information of consecutive decoded states")
+
+# ---------------------------------------------------------------------------
+# 2b. Averaged likelihood E*[P(Y)^n]: best switching probability a* = T_12 = T_21 of a
+#     2-state fit against n. Tilted filter operator, exact for real n.
+#     ~/Science/Guillaume/underfitted-hmm/simulations/annealed/scan1d_2{2,3}.txt (n <= 0.3)
+#     and notes/derivations/annealed_transfer.md, section 5 table (n >= 0.4; "<1e-7" drawn as 0).
+#     Case 22: 2 true states, T*_12 = T*_21 = 0.1, means +-1.5, sigma = 1.
+#     Case 23: 3 true states (slow chain, means -2, 0, 2, sigma* = 0.7), fitted means +-1.3.
+n22 = [0, 0.005, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0]
+a22 = [0.10003, 0.09907, 0.09803, 0.09613, 0.09020, 0.08048, 0.07091, 0.06154, 0.04374,
+       0.028, 0.015, 0.0057, 0.0011, 4e-5, 0.0]
+n23 = [0, 0.005, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0]
+a23 = [0.07622, 0.07507, 0.07396, 0.07166, 0.06473, 0.05325, 0.04229, 0.03242, 0.01710,
+       0.0077, 0.0027, 0.0006, 4e-5, 0.0, 0.0]
+p = Plot(760, 470, (0, 1), (0, 0.11), margin=(110, 40, 24, 76))
+p.axes([0, 0.25, 0.5, 0.75, 1.0], [0, 0.025, 0.05, 0.075, 0.1], r"$n$",
+       r"$\arg\max_a \Lambda(n)/n$", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
+p.hline(0.1, REF)
+p.text(p.X(0.98), p.Y(0.1) - 10, "true value", 15, "end", MUTED)
+p.line(n22, a22, TEAL)
+p.dots(n22[::2] + [n22[-1]], a22[::2] + [a22[-1]], TEAL)
+p.text(p.X(0.0) + 10, p.Y(0.108), "maximum likelihood", 15, "start", MUTED)
+p.text(p.X(0.98), p.Y(0.02), "frozen: never switches", 15, "end", MUTED)
+p.save("replica_freeze.svg", "Best switching probability of a two-state fit against n, for the averaged likelihood E[P(Y)^n]")
+
+# ---------------------------------------------------------------------------
+# 2c. Second-order expansion Lambda(n)/n = ell + n v / 2 against the fitted switching
+#     probability a (2 fitted states, 2 true states, T*_12 = 0.1).
+#     ell(a), v(a): ~/Science/Guillaume/underfitted-hmm/simulations/annealed/scan1d_22.txt
+scan22 = [
+    (0.01000, -1.796941, 1.570098),
+    (0.01091, -1.791289, 1.532708),
+    (0.01191, -1.785665, 1.495540),
+    (0.01299, -1.780076, 1.458611),
+    (0.01417, -1.774531, 1.421943),
+    (0.01547, -1.769033, 1.385520),
+    (0.01688, -1.763593, 1.349364),
+    (0.01841, -1.758220, 1.313485),
+    (0.02009, -1.752922, 1.277879),
+    (0.02192, -1.747710, 1.242561),
+    (0.02392, -1.742598, 1.207548),
+    (0.02610, -1.737597, 1.172834),
+    (0.02848, -1.732721, 1.138440),
+    (0.03107, -1.727985, 1.104360),
+    (0.03390, -1.723406, 1.070609),
+    (0.03699, -1.719004, 1.037194),
+    (0.04036, -1.714798, 1.004122),
+    (0.04404, -1.710810, 0.971400),
+    (0.04806, -1.707066, 0.939032),
+    (0.05244, -1.703592, 0.907029),
+    (0.05721, -1.700417, 0.875395),
+    (0.06243, -1.697576, 0.844134),
+    (0.06812, -1.695103, 0.813256),
+    (0.07432, -1.693040, 0.782764),
+    (0.08110, -1.691428, 0.752663),
+    (0.08849, -1.690319, 0.722963),
+    (0.09655, -1.689767, 0.693668),
+    (0.10535, -1.689832, 0.664788),
+    (0.11495, -1.690581, 0.636332),
+    (0.12542, -1.692092, 0.608314),
+    (0.13685, -1.694448, 0.580751),
+    (0.14932, -1.697747, 0.553663),
+    (0.16293, -1.702095, 0.527080),
+    (0.17778, -1.707618, 0.501040),
+    (0.19398, -1.714457, 0.475594),
+    (0.21165, -1.722772, 0.450810),
+    (0.23094, -1.732754, 0.426779),
+    (0.25198, -1.744618, 0.403624),
+    (0.27495, -1.758621, 0.381509),
+    (0.30000, -1.775066, 0.360656),
+]
+ga = [r[0] for r in scan22]
+p = Plot(760, 470, (0.01, 0.3), (-0.15, 0.012), xlog=True, margin=(110, 120, 24, 76))
+p.axes([0.01, 0.03, 0.1, 0.3], [-0.15, -0.1, -0.05, 0], "switching probability of the fitted chain",
+       r"$\ell + \tfrac{n}{2}\, v - \max$", xfmt=lambda v: f"{v:g}", yfmt=lambda v: f"{v:g}")
+xt = p.X(0.1)
+p.out.append(f'<line x1="{xt:.1f}" x2="{xt:.1f}" y1="{p.t}" y2="{p.h - p.b}" stroke="{REF}" '
+             f'stroke-width="1.5" stroke-dasharray="4 4"/>')
+p.text(xt + 8, p.Y(-0.142), "true value", 15, "start", MUTED)
+for n, col in [(0, TEAL), (0.2, "#6f4aa0"), (1, BRICK)]:
+    F = [l + n / 2 * v for _, l, v in scan22]
+    m = max(F)
+    pts = [(a, f - m) for a, f in zip(ga, F) if f - m >= -0.15]
+    p.line([q[0] for q in pts], [q[1] for q in pts], col)
+    k = F.index(m)
+    p.dots([ga[k]], [0], col, r=7)
+    xa, ya = pts[-1]
+    p.text(p.X(xa) + 10, p.Y(ya) + 6, f"$n = {n:g}$", 17, "start", col)
+p.save("fluct_reward.svg", "Second-order expansion of the averaged likelihood against the switching probability, for n = 0, 0.2, 1")
 
 # ---------------------------------------------------------------------------
 # 3. Slow limit, 4-regime truth, K=2, eps=0.01: scan of l(cQ) - l(Q_lumped)
@@ -199,7 +288,7 @@ def limits_map(answers=False):
         else:
             t(x + w / 2, y + h / 2 + 13, label, 40)
 
-    sub = ["a+b merge", "?", "a+b merge", "?"] if answers else [None] * 4
+    sub = ["emissions decide", "?", "emissions decide", "?"] if answers else [None] * 4
     bw, bh, gap, x0, y0 = 420, 190, 40, 10, 10
     box(x0, y0, bw, bh, TEAL, r"$\mathcal{T} = \mathbf{1}\pi^\top + \varepsilon R$", sub[0])
     box(x0 + bw + gap, y0, bw, bh, TEAL, r"$\mathcal{T} = I + \varepsilon Q$", sub[1], open_=True)
