@@ -680,18 +680,12 @@ Note:
 ## The fit that maximises the averaged likelihood puts all its weight on one sequence
 
 <div>
-$$\mathbb{E}_\star[P(Y)] = \int P_\star(Y)\, P(Y)\, dY \;\le\; \max_{Y} P_\star(Y)$$
+$$\mathbb{E}_\star[P(Y)] = \int P_\star(Y)\, P(Y)\, dY \;\le\; \max_{Y} P_\star(Y) \int P(Y)\, dY = \max_{Y} P_\star(Y)$$
 </div>
 
-<ul>
-<li>Since $\int P(Y)\, dY = 1$; equality when $P$ is a Dirac on the most likely true sequence</li>
-<li>Emissions: $M_{ss^\star} = \int f_s(y)\, f^\star_{s^\star}(y)\, dy$ is largest when $f_s$ is a point mass at the peak of $f^\star_{s^\star}$</li>
-<li>Transitions, with separated emissions ($M$ diagonal): the largest eigenvalue of $\tau$ is reached by a deterministic $\mathcal{T}$</li>
-</ul>
-
 Note:
-- The average is linear in P, so its maximum over all laws sits at a corner: a single sequence
-- Inside τ: the overlaps M push emissions to points, the eigenvalue pushes 𝒯 to a deterministic cycle. So n = 1 finds the mode, not the law
+- True for any law P: the average is linear in P, so its maximum sits on a single sequence
+- An HMM is a Dirac only with point-mass emissions and a deterministic 𝒯. So n = 1 finds the mode, not the law
 - Known in statistics: the γ-divergence and the density power divergence add a normalisation term to stop this collapse
 
 ---
