@@ -58,7 +58,7 @@ Note:
 <img src="figures/paper_pred_gain.png" style="width:74%; display:block; margin:10px auto 0;" />
 
 Note:
-- Only if asked. Gain over the stationary forecast against horizon, one panel per S
+- Gain over the stationary forecast against horizon, one panel per S
 - Dashed: the fit that gives t_pred, from 0.29 s at S = 2 to 1.56 s at S = 128
 
 ---
@@ -156,7 +156,7 @@ $$\text{cluster } j \text{ splits when } T < T_c = 2 \lambda_{\max}\big(\mathrm{
 Footnote: Rose, Gurewitz & Fox, *PRL* (1990); Rose, *Proc. IEEE* (1998)
 
 Note:
-- Only if asked. The posterior is Bayes with equal weights and width T/2; also the maximum-entropy assignment at fixed mean distance D
+- The posterior is Bayes with equal weights and width T/2; also the maximum-entropy assignment at fixed mean distance D
 - Minimising F gives centres as weighted means. Iterate at fixed T, then lower T slowly
 - T_c: the one-centre solution becomes a saddle along the top principal axis. Near T_c the split is continuous
 - Same as a Gaussian mixture with variance fixed at T/2; T → 0 is k-means. Local condition only, no global guarantee
@@ -227,7 +227,7 @@ $$\ell(\theta) = -h_\star - \mathbb{E}_\star\Big[\mathrm{KL}\big(p_\star(y_t \mi
 </div>
 
 Note:
-- Only if asked. Chain rule: the likelihood is a product of one-step predictions; over a long sequence its average gives ℓ (ergodic theorem)
+- Chain rule: the likelihood is a product of one-step predictions; over a long sequence its average gives ℓ (ergodic theorem)
 - Hard part of the proof: the filter forgets its start, so a finite past acts like the infinite past
 - h⋆ is the same for every fit, so maximising ℓ = minimising the average KL to the true prediction
 
@@ -242,7 +242,7 @@ Note:
 Footnote: Gassiat & Boucheron (2003); Finesso, Grassi & Spreij (2010); Pohle, Langrock, van Beest & Schmidt (2017)
 
 Note:
-- Only if asked. Gassiat & Boucheron: you will detect that K is too small, nothing more
+- Gassiat & Boucheron: you will detect that K is too small, nothing more
 - Finesso et al.: same goal, same obstacle; they replace ℓ by a computable proxy, which gives an algorithm, not a description of the fit
 - Pohle et al.: in practice, extra states absorb a wrong emission model
 
@@ -385,7 +385,7 @@ u_t &= \eta \Big(\sum_s \frac{\phi_s(y_{t-1})\,\phi_s(y_t)}{\pi_s} - 1\Big) \qqu
 <p style="font-size:0.64em;">where $\phi_s(y) = \pi_s f_s(y) / m(y)$: probability of state $s$ judged from frame $y$ alone</p>
 
 Note:
-- Only if asked. Line 1: the prediction of the last derivation, divided by the mixture m. Exact
+- Line 1: the prediction of the last derivation, divided by the mixture m. Exact
 - Line 2: f_s/m = φ_s/π_s, and at this order the filter only knows the last frame, π_{t−1} = φ(y_{t−1}). Call the sum u_t
 - Lines 3–4: with two states R = η(I − 1πᵀ); εη is the lag-1 autocorrelation of the fitted state. u_t is a product of consecutive fluctuations of φ₁
 - Toy, a+b fit: frames from a and from b both give φ_ab ≈ 1, so only ab ↔ c is visible
@@ -408,7 +408,7 @@ $$\begin{aligned}
 </ul>
 
 Note:
-- Only if asked. ρ: how much consecutive frames agree on the state. κ: how sharply one frame names it (1 without overlap)
+- ρ: how much consecutive frames agree on the state. κ: how sharply one frame names it (1 without overlap)
 - Expand the log to second order: the linear term sets the direction of εη, the quadratic term how far
 - Optimum εη̂ = ρ/κ, gain ρ²/2. Toy, a+b fit: after c, ab comes more often than chance, so ρ < 0
 
@@ -428,7 +428,7 @@ $$\Longrightarrow\quad \varepsilon \hat R = \Phi^{-1}\, \Gamma_1\, \Phi^{-1} D_\
 </ul>
 
 Note:
-- Only if asked. Reward: only the covariance Γ₁ of consecutive state probabilities survives, linear in R
+- Reward: only the covariance Γ₁ of consecutive state probabilities survives, linear in R
 - Penalty: frames almost independent, so the square factorises into Φ, quadratic in R. Lag 2 enters only at O(ε⋆³)
 - The balance sets the memory: εR̂ = Φ⁻¹Γ₁Φ⁻¹D_π
 
@@ -447,7 +447,7 @@ $$\begin{gathered}\hat{\mathcal{T}}_{ss'} = P_\star\big(s^\star_t \in C_{s'} \mi
 </ul>
 
 Note:
-- Only if asked. Without overlap Φ = D_π, so εR̂ is the grouped transition minus π: watch the true chain, write only the group, count
+- Without overlap Φ = D_π, so εR̂ is the grouped transition minus π: watch the true chain, write only the group, count
 - Toy: P(ab → ab) = (0.25 × 0.20 + 0.50 × 0.95) / 0.75 = 0.70, the number on the main slide
 - ρᵢ: canonical correlations, the largest correlation between weighted sums of φ at t−1 and at t, then the next one uncorrelated with it
 - With overlap, a soft lumping: 𝒯̂ − 1πᵀ = W(𝒯⋆ − 1π⋆ᵀ)V. Checked against the exact filter: within 2–3% at ε⋆ = 0.05–0.1
@@ -502,7 +502,7 @@ $$\begin{aligned}
 <p style="font-size:0.64em;">$\pi_{t|t-1}$: belief before seeing $y_t$; $\ \pi_t$: after; $\ L_{s s'} = \log f_s / f_{s'}$; $\ \hat s = \hat s_t$</p>
 
 Note:
-- Only if asked. Line 1: the prior on s averages column s of 𝒯, so it lies in [t_min, 1] whatever the past
+- Line 1: the prior on s averages column s of 𝒯, so it lies in [t_min, 1] whatever the past
 - Line 2: Bayes; the normalisation cancels in the ratio, which is below 1/t_min times e^{−margin}
 - Line 3: sum over the wrong states. The bound vanishes when the margin grows (hypothesis A)
 
@@ -653,7 +653,7 @@ $$\begin{aligned}
 <p style="font-size:0.64em;">$Y = y_{1:L}$; $\ P$, $P_\star$: fitted and true likelihoods; $\ s_{1:L}$, $s^\star_{1:L}$: fitted and true hidden paths; $\ \rho_0(s, s^\star) = \pi_s\, \pi^\star_{s^\star} \int f_s(y)\, f^\star_{s^\star}(y)\, dy$: weight of the first pair</p>
 
 Note:
-- Only if asked. Line 1: average over the true data
+- Line 1: average over the true data
 - Line 2: write both likelihoods as sums over hidden paths. Given both paths, frames are independent, so the integral splits into one overlap per step
 - Line 3: group the two paths into one path of pairs (s, s⋆): the weights multiply along it, a matrix power. Exact for any L
 
@@ -671,9 +671,28 @@ $$\mathbb{E}_\star[P(Y)] = \langle \rho_0 | \tau^{L-1} | 1 \rangle, \qquad \tau_
 </ul>
 
 Note:
-- Only if asked. Run the fitted and true chains side by side; at each step, gain the overlap of what they emit
+- Run the fitted and true chains side by side; at each step, gain the overlap of what they emit
 - Long sequences: only the largest eigenvalue of τ counts, so maximising the averaged likelihood = maximising that eigenvalue
 - Toy: a 6 × 6 matrix (2 fitted × 3 true)
+
+--
+
+## The fit that maximises the averaged likelihood puts all its weight on one sequence
+
+<div>
+$$\mathbb{E}_\star[P(Y)] = \int P_\star(Y)\, P(Y)\, dY \;\le\; \max_{Y} P_\star(Y)$$
+</div>
+
+<ul>
+<li>Since $\int P(Y)\, dY = 1$; equality when $P$ is a Dirac on the most likely true sequence</li>
+<li>Emissions: $M_{ss^\star} = \int f_s(y)\, f^\star_{s^\star}(y)\, dy$ is largest when $f_s$ is a point mass at the peak of $f^\star_{s^\star}$</li>
+<li>Transitions, with separated emissions ($M$ diagonal): the largest eigenvalue of $\tau$ is reached by a deterministic $\mathcal{T}$</li>
+</ul>
+
+Note:
+- The average is linear in P, so its maximum over all laws sits at a corner: a single sequence
+- Inside τ: the overlaps M push emissions to points, the eigenvalue pushes 𝒯 to a deterministic cycle. So n = 1 finds the mode, not the law
+- Known in statistics: the γ-divergence and the density power divergence add a normalisation term to stop this collapse
 
 ---
 
